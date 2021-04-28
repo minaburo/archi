@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-pelov-lpwan-architecture-01
+docname: draft-pelov-lpwan-architecture-02
 cat: info
 pi:
   symrefs: 'yes'
@@ -142,13 +142,13 @@ rules can be fetched on-demand by both parties from the same Uniform Resource
 Name (URN) {{rfc8141}}, ensuring that the peers use the exact same set of rules.
 
 ~~~~
-        +----------+  Wi-Fi /   +----------+                ....
-        |    IP    |  Ethernet  |    IP    |            ..          )
-        |   Host   +-----/------+  Router  +----------(   Internet   )
-        | SCHC C/D |  Serial    | SCHC C/D |            (         )
-        +----------+            +----------+               ...
-                    <-- SCHC -->
-                      over PPP
+    +----------+  Wi-Fi /   +----------+                ....
+    |    IP    |  Ethernet  |    IP    |            ..          )
+    |   Host   +-----/------+  Router  +----------(   Internet   )
+    | SCHC C/D |  Serial    | SCHC C/D |            (         )
+    +----------+            +----------+               ...
+                <-- SCHC -->
+                  over PPP
 ~~~~
 {: #Fig-PPPnetarch title='PPP-based SCHC Deployment'}
 
