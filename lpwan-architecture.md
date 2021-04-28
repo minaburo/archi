@@ -10,8 +10,8 @@ pi:
   compact: 'yes'
   toc: 'yes'
 
-title: LPWAN Static Context Header Compression (SCHC) for CoAP
-abbrev: LPWAN CoAP compression
+title: LPWAN Static Context Header Compression (SCHC) Architecture
+abbrev: LPWAN Architecture
 wg: lpwan Working Group
 author:
 - ins: A. Pelov
@@ -36,12 +36,12 @@ author:
   city: 35510 Cesson-Sevigne Cedex
   country: France
   email: ana@ackl.io
-normative:  
-  rfc8724: 
+normative:
+  rfc8724:
   I-D.ietf-lpwan-schc-yang-data-model:
   I-D.ietf-lpwan-coap-static-context-hc:
   I-D.thubert-lpwan-schc-over-ppp:
-  
+
 
 
 --- abstract
@@ -96,34 +96,34 @@ hides the field structure.
              ((((LPWAN))))             ------   Internet  ------
 
                 Figure 3: OSCORE compression/decompression.
-                               
+
 ~~~~
 {: #Fig-SCHCCOAP2 title='Different SCHC instances in a global system'}
 
 
 This document defines a generic architecture for SCHC that can be used at any of these levels.
 The goal of the architectural document is to orchestrate the different protocols and data model
-defined by the LPWAN woeking group to design an operational and interoperable  
+defined by the LPWAN woeking group to design an operational and interoperable
 framework for allowing IP application over contrained networks.
 
 # Definitions
 
 # Global architecture
 
-As described in  {{rfc8724}} a SCHC service is composed of a Parser, analyzing 
+As described in  {{rfc8724}} a SCHC service is composed of a Parser, analyzing
 packets and creating a list of fields what will be used to match against the compression
 rules. If a packet matches rules, compression can be applied following rules instructions.
 
-If SCHC compressed packet is too large to be send in a single L2 frame, fragmentation 
+If SCHC compressed packet is too large to be send in a single L2 frame, fragmentation
 will apply. The process is similar, device rules are checked to find the most appropriate
-fragmentation rule, regarding the SCHC packet size, the link error rate, the reliability 
+fragmentation rule, regarding the SCHC packet size, the link error rate, the reliability
 required by the application, ...
 
 On the other direction, when a packet SCHC arrives, the ruleID is used to find the rule.
-Its nature allows to select if it is a compression or fragmentation rule. 
+Its nature allows to select if it is a compression or fragmentation rule.
 
-The rule database contains a set of rules specific to a single device. The {{rfc8724}} 
-indicates that the SCHC instance reads the rules to process C/D and F/R, rules are not 
+The rule database contains a set of rules specific to a single device. The {{rfc8724}}
+indicates that the SCHC instance reads the rules to process C/D and F/R, rules are not
 modified during these actions.
 
 
@@ -135,17 +135,17 @@ In any cases, the rules must be the same in both ends to perform C/D and F/R.
 
 
 ~~~~
-    (device)                                 (core|app) 
+    (device)                                 (core|app)
 
      (---)                                     (---)
      ( r )                                     ( r )
      (---)                                     (---)
         . read                                   . read
         .                                        .
-     +-----+                                  +-----+ 
+     +-----+                                  +-----+
  <===| R&D |<=..............................<=| C&F |<===
  ===>| C&F |=>..............................=>| R&D |===>
-     +-----+                                  +-----+   
+     +-----+                                  +-----+
 
 
 ~~~~
@@ -165,18 +165,18 @@ To enable rule synchronization between both ends, a common rule representation m
        (-------)  update |Manager|   NETCONF, RESTCONF or CORECONF
           . read  delete +=======+   request
           .
-       +-------+ 
+       +-------+
    <===| R & D |<===
    ===>| C & F |===>
        +-------+
 ~~~~
 {: #Fig-RM title='Summerized SCHC elements'}
 
-Rule Manager (RM) is in charge of handling data derived from the YANG Data Model and apply changes to the rules database {{Fig-RM}}. 
+Rule Manager (RM) is in charge of handling data derived from the YANG Data Model and apply changes to the rules database {{Fig-RM}}.
 
 The RM is a application using the Internet to exchange information, therefore:
 
-* for the network-level SCHC, the communication does not require routing. Each of the end-points having an RM and both RMs can be viewed on the same link, therefore wellknown Link Local addresses can be used to identify the device and the core RM. L2 security MAY be deemed as sufficient, if it provides the necessary level of protection. 
+* for the network-level SCHC, the communication does not require routing. Each of the end-points having an RM and both RMs can be viewed on the same link, therefore wellknown Link Local addresses can be used to identify the device and the core RM. L2 security MAY be deemed as sufficient, if it provides the necessary level of protection.
 
 * for application-level SCHC, routing is involved and global IP addresses SHOULD be used. End-to-end encryption is recommended.
 
@@ -188,7 +188,7 @@ The RM traffic may be itself compressed by SCHC, especially if CORECONF is used,
 
 # Acknowledgements
 
-The authors would like to thank (in alphabetic order): 
+The authors would like to thank (in alphabetic order):
 
 
 
