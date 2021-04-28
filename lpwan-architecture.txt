@@ -88,23 +88,23 @@ Table of Contents
    the decompressor can rebuild the original bitstream based on the
    residue.
 
-   [rfc8724] also provides a Fragmentation/Reassembly (F/R) capability,
-   in order to cope with constrained (Maximum Transmit Unit (MTU), which
-   is typically less than the IPv6 minimum link MTU of 1280 (see section
-   5 of [rfc8200]) on an LPWAN network.
+   [rfc8724] also provides a Fragmentation/Reassembly (F/R) capability
+   to cope with a constrained Maximum Transmit Unit (MTU) below the IPv6
+   minimum link MTU of 1280 bytes (see section 5 of [rfc8200]), which is
+   typically the case on an LPWAN network.
 
    [rfc8724] was defined to compress IPv6 and UDP; but SCHC really is a
    generic compression and fragmentation technology.  As such, SCHC is
    agnostic to which protocol it compresses and at which layer it is
    operated.  The C/D peers may be hosted by different entities for
    different layers, and the F/R operation may also be performed between
-   different parties, or different sub-layers in the same stack.  If a
-   protocol or a layer requires additional capabilities, it is always
-   possible to document more specifically how to use SCHC in that
+   different parties, or different sub-layers in the same stack.
+
+   If a protocol or a layer requires additional capabilities, it is
+   always possible to document more specifically how to use SCHC in that
    context, or to specify additional behaviours.  For instance,
    [I-D.ietf-lpwan-coap-static-context-hc] extends the compression to
    CoAP [rfc7252] and OSCORE [rfc8613].
-
 
 
 
