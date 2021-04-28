@@ -11,7 +11,7 @@
 <?rfc compact="yes"?>
 <?rfc toc="yes"?>
 
-<rfc ipr="trust200902" docName="draft-pelov-lpwan-architecture-01" category="std">
+<rfc ipr="trust200902" docName="draft-pelov-lpwan-architecture-01" category="info">
 
   <front>
     <title abbrev="LPWAN Architecture">LPWAN Static Context Header Compression (SCHC) Architecture</title>
@@ -52,7 +52,7 @@
 
     <date year="2021" month="April" day="28"/>
 
-    
+    <area>Internet</area>
     <workgroup>lpwan Working Group</workgroup>
     
 
@@ -81,42 +81,92 @@ selected Low-Power Wide Area Networking (LPWAN) radio technologies.
 (SCHC) <xref target="rfc8724"/> technology.</t>
 
 <t>SCHC provides an extreme compression capability based on a state that must
-match on the compressor and decompressor side. That state if formed of an ordered
-set of Compression/Decompression (C/D) rules. The first rule that matches is used
-to compress, and is indicated with the compression residue. Based on the rule identifier
-(RuleID) the decompressor can rebuild the original bitstream based on the residue.</t>
+match on the compressor and decompressor side.
+This state if formed of an ordered set of Compression/Decompression (C/D) rules.
+The first rule that matches is used to compress, and is indicated with the
+compression residue. Based on the rule identifier (RuleID) the decompressor can
+rebuild the original bitstream based on the residue.</t>
 
 <t><xref target="rfc8724"/> also provides a Fragmentation/Reassembly (F/R) capability, in
 order to cope with constrained (Maximum Transmit Unit (MTU), which is typically
 less than the IPv6 minimum link MTU of 1280 (see section 5 of <xref target="rfc8200"/>) on an
 LPWAN network.</t>
 
-<t>As a compression and fragmentation method, SCHC is agnostic to the protocol and
-the layer that employs is. The C/D peers may be different for different layers,
-and the F/R operation may also be performed between different parties, or
-different sub-layers in the same stack. If a protocol or a layer requires
-additional capabilities, it is always possible to document more specifically
-how to use SCHC in that context, or to specify additional behaviours.
+<t><xref target="rfc8724"/> was defined to compress IPv6 and UDP; but SCHC really is a generic
+compression and fragmentation technology. As such, SCHC is agnostic to which
+protocol it compresses and at which layer it is operated. The C/D peers may be
+hosted by different entities for different layers, and the F/R operation may
+also be performed between different parties, or different sub-layers in the same
+stack.
+If a protocol or a layer requires additional capabilities, it is always possible
+to document more specifically how to use SCHC in that context, or to specify
+additional behaviours.
 For instance, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> extends the compression
 to CoAP <xref target="rfc7252"/> and OSCORE <xref target="rfc8613"/>.</t>
 
 <t>SCHC is also designed to be profiled to adapt to the specific necessities of the
-various LPWAN technologies to which it applies.  Appendix D. “SCHC Parameters”
-of <xref target="rfc8724"/> sts the information that needs to be provided in the LPWAN technology-specific documents that provide the profiles.
+various LPWAN technologies to which it is applied. Appendix D. “SCHC Parameters”
+of <xref target="rfc8724"/> lists the information that an LPWAN technology-specific document
+must provide to profile SCHC for that technology.
 As an example, <xref target="rfc9011"/> provides the profile for LoRaWAN networks.</t>
+
+<t>In order to deploy SCHC, it is mandatory that the C/D and F/R peers are
+provisionned with the exact same set of rules.
+To be able to provision end-points from different vendors, a common data model
+is needed that expresses the SCHC rules in an interoperable fashion. To that
+effect, <xref target="I-D.ietf-lpwan-schc-yang-data-model"/> defines a rule representation
+using the YANG <xref target="rfc7950"/> formalism.</t>
+
+<t>Finally, section 3 of <xref target="rfc8724"/> depicts a typical network architecture for
+an LPWAN network, simplified from that shown in <xref target="rfc8376"/>and reproduced in
+<xref target="Fig-LPWANnetarch"/>.</t>
+
+<figure title="Typical LPWAN Network Architecture" anchor="Fig-LPWANnetarch"><artwork><![CDATA[
+ ()   ()   ()       |
+  ()  () () ()     / \       +---------+
+() () () () () () /   \======|    ^    |             +-----------+
+ ()  ()   ()     |           | <--|--> |             |Application|
+()  ()  ()  ()  / \==========|    v    |=============|   Server  |
+  ()  ()  ()   /   \         +---------+             +-----------+
+ Dev            RGWs             NGW                      App
+]]></artwork></figure>
+
+<t>Typically, an LPWAN network topology is star-oriented, which means that all
+packets between the same source-destination pair follow the same path from/to a
+central point. In that model, highly constrained Devices (Dev) exchange
+information with LPWAN Application Servers (Apps) through a central Network
+Gateway (NGW), which can be powered and is typically a lot less constrained than
+the Devices.
+Because devices embed built-in applications, the traffic flows to be compressed
+are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the network .</t>
+
+<t>Then again, SCHC is very generic and its applicability is not limited to
+star-oriented deployments and/or to use cases where applications are very static
+and the state can provisionned in advance.
+<xref target="I-D.thubert-intarea-schc-over-ppp"/> describes an alternate deployment where
+the C/D and/or F/R operations are performed between peers of equal capabilities
+over a PPP <xref target="rfc2516"/> connection. SCHC over PPP  illustrates that with SCHC,
+the protocols that are compressed can be discovered dynamically and the
+rules can be fetched on-demand by both parties from the same Uniform Resource
+Name (URN) <xref target="rfc8141"/>, ensuring that the peers use the exact same set of rules.</t>
+
+<figure title="PPP-based SCHC Deployment" anchor="Fig-PPPnetarch"><artwork><![CDATA[
+        +----------+  Wi-Fi /   +----------+                ....
+        |    IP    |  Ethernet  |    IP    |            ..          )
+        |   Host   +-----/------+  Router  +----------(   Internet   )
+        | SCHC C/D |  Serial    | SCHC C/D |            (         )
+        +----------+            +----------+               ...
+                    <-- SCHC -->
+                      over PPP
+]]></artwork></figure>
+
+<t>This document provides a general architecture for a SCHC deployment, positioning
+the required specifications, describing the possible deployment types, and
+indicating models whereby the rules can be distributed and installed to enable
+reliable and scalable operations.</t>
 
 </section>
 <section anchor="Operation" title="SCHC Operation">
-
-<t>The base operation and the definition of the SCHC C/D &amp; F/R are now described in several documents published by the LPWAN working group.</t>
-
-<t>Among them:</t>
-
-<t><list style="symbols">
-  <t>The <xref target="rfc8724"/> defines the generic compression and fragmentation mechanisms for SCHC and applies it to IPv6 and UDP.</t>
-  <t>The <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> extend the compression to CoAP and OSCORE.</t>
-  <t>The <xref target="I-D.ietf-lpwan-schc-yang-data-model"/> defines a rule representation using the YANG formalism.</t>
-</list></t>
 
 <t>As <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> states, the SCHC compression and fragmentation mechanism can be implemented at different levels and/or managed by different organizations.
 For instance, as represented figure <xref target="Fig-SCHCCOAP2"/>, IP compression and fragmentation may be managed by the network SCHC instance and end-to-end  compression between the device and the application. The former can itself be split in two instances since encryption
@@ -147,9 +197,6 @@ hides the field structure.</t>
   k C    .  lpwan .     . lpwan  .       .                    .        .
          ..........     ..................                    ..........
              ((((LPWAN))))             ------   Internet  ------
-
-                Figure 3: OSCORE compression/decompression.
-
 ]]></artwork></figure>
 
 <t>This document defines a generic architecture for SCHC that can be used at any of these levels.
@@ -197,8 +244,6 @@ is either located in the core network or at the application.</t>
  <===| R&D |<=..............................<=| C&F |<===
  ===>| C&F |=>..............................=>| R&D |===>
      +-----+                                  +-----+
-
-
 ]]></artwork></figure>
 
 <t>To enable rule synchronization between both ends, a common rule representation must be defined.</t>
@@ -230,7 +275,7 @@ is either located in the core network or at the application.</t>
   <t>for application-level SCHC, routing is involved and global IP addresses SHOULD be used. End-to-end encryption is recommended.</t>
 </list></t>
 
-<t>Management messages can also be carried in the negotiation protocol as proposed in <xref target="I-D.thubert-lpwan-schc-over-ppp"/></t>
+<t>Management messages can also be carried in the negotiation protocol as proposed in <xref target="I-D.thubert-intarea-schc-over-ppp"/></t>
 
 <t>The RM traffic may be itself compressed by SCHC, especially if CORECONF is used, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> can be used.</t>
 
@@ -278,6 +323,24 @@ is either located in the core network or at the application.</t>
 
 
 
+<reference  anchor="rfc2516" target='https://www.rfc-editor.org/info/rfc2516'>
+<front>
+<title>A Method for Transmitting PPP Over Ethernet (PPPoE)</title>
+<author initials='L.' surname='Mamakos' fullname='L. Mamakos'><organization /></author>
+<author initials='K.' surname='Lidl' fullname='K. Lidl'><organization /></author>
+<author initials='J.' surname='Evarts' fullname='J. Evarts'><organization /></author>
+<author initials='D.' surname='Carrel' fullname='D. Carrel'><organization /></author>
+<author initials='D.' surname='Simone' fullname='D. Simone'><organization /></author>
+<author initials='R.' surname='Wheeler' fullname='R. Wheeler'><organization /></author>
+<date year='1999' month='February' />
+<abstract><t>This document describes how to build PPP sessions and encapsulate PPP packets over Ethernet. This memo provides information for the Internet community.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='2516'/>
+<seriesInfo name='DOI' value='10.17487/RFC2516'/>
+</reference>
+
+
+
 <reference  anchor="rfc7252" target='https://www.rfc-editor.org/info/rfc7252'>
 <front>
 <title>The Constrained Application Protocol (CoAP)</title>
@@ -289,6 +352,33 @@ is either located in the core network or at the application.</t>
 </front>
 <seriesInfo name='RFC' value='7252'/>
 <seriesInfo name='DOI' value='10.17487/RFC7252'/>
+</reference>
+
+
+
+<reference  anchor="rfc7950" target='https://www.rfc-editor.org/info/rfc7950'>
+<front>
+<title>The YANG 1.1 Data Modeling Language</title>
+<author initials='M.' surname='Bjorklund' fullname='M. Bjorklund' role='editor'><organization /></author>
+<date year='2016' month='August' />
+<abstract><t>YANG is a data modeling language used to model configuration data, state data, Remote Procedure Calls, and notifications for network management protocols.  This document describes the syntax and semantics of version 1.1 of the YANG language.  YANG version 1.1 is a maintenance release of the YANG language, addressing ambiguities and defects in the original specification.  There are a small number of backward incompatibilities from YANG version 1.  This document also specifies the YANG mappings to the Network Configuration Protocol (NETCONF).</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7950'/>
+<seriesInfo name='DOI' value='10.17487/RFC7950'/>
+</reference>
+
+
+
+<reference  anchor="rfc8141" target='https://www.rfc-editor.org/info/rfc8141'>
+<front>
+<title>Uniform Resource Names (URNs)</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<author initials='J.' surname='Klensin' fullname='J. Klensin'><organization /></author>
+<date year='2017' month='April' />
+<abstract><t>A Uniform Resource Name (URN) is a Uniform Resource Identifier (URI) that is assigned under the &quot;urn&quot; URI scheme and a particular URN namespace, with the intent that the URN will be a persistent, location-independent resource identifier.  With regard to URN syntax, this document defines the canonical syntax for URNs (in a way that is consistent with URI syntax), specifies methods for determining URN-equivalence, and discusses URI conformance.  With regard to URN namespaces, this document specifies a method for defining a URN namespace and associating it with a namespace identifier, and it describes procedures for registering namespace identifiers with the Internet Assigned Numbers Authority (IANA).  This document obsoletes both RFCs 2141 and 3406.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='8141'/>
+<seriesInfo name='DOI' value='10.17487/RFC8141'/>
 </reference>
 
 
@@ -390,23 +480,17 @@ is either located in the core network or at the application.</t>
 
 
 
-<reference anchor="I-D.thubert-lpwan-schc-over-ppp">
+<reference anchor="I-D.thubert-intarea-schc-over-ppp">
 <front>
 <title>SCHC over PPP</title>
-
 <author initials='P' surname='Thubert' fullname='Pascal Thubert'>
-    <organization />
+<organization />
 </author>
-
-<date month='June' day='4' year='2020' />
-
+<date year='2021' month='April' day='21' />
 <abstract><t>This document extends RFC 5172 to signal the use of SCHC as the compression method between a pair of nodes over PPP.  Combined with RFC 2516, this enables the use of SCHC over Ethernet and Wi-Fi.</t></abstract>
-
 </front>
-
-<seriesInfo name='Internet-Draft' value='draft-thubert-lpwan-schc-over-ppp-01' />
-<format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-thubert-lpwan-schc-over-ppp-01.txt' />
+<seriesInfo name='Internet-Draft' value='draft-thubert-intarea-schc-over-ppp-03'/>
+<format type='TXT' target='https://www.ietf.org/internet-drafts/draft-thubert-intarea-schc-over-ppp-03.txt'/>
 </reference>
 
 
@@ -420,87 +504,110 @@ is either located in the core network or at the application.</t>
   </back>
 
 <!-- ##markdown-source:
-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
-7+wb/MsX/uHKFMUG3f8HC+o71CknAAA=
+H4sIAAByiWAAA8VbbW/cOJL+rl9BTICZ9qbVjp2X2fElg3XsOMkhfoGdbG6B
+xS3YErubiFrUSmo7PXHut+9TVaREtR2PczuHEyZJi5LIeq+nipw0TZOm1WX+
+D1240uyptl6ZxFY1/2ra3UePfnm0m+QuK/USj/Naz9q0MoW7TIvqSpeprrOF
+bU3WrmqTPtpJMt3uKVvOXFLZvUSpZr2szazZUz+tTfMTDbi63Rhpa5u1/X3m
+lpWOB1qXhZuktW0BQn54d/Zx/0RdtLq1mTpwZWs+t+qN0bmpcbusatM01pVq
+dHHw5mBL7Udk/pDo6bQ2l3tKJomfJVfzPcWcqY+u/mTLuXpdu1WV6NroPfUW
+69SlaRO9aheu3ktS8ApW9ifqjIQCYkVQ+4X5DLGCmDDuasy8n30qrBOejQGL
+OzuPf95X+tKUK6Ny06iDhV5WjXpZ6DJrSBi2Xe+px0+f7jxSB+DJlemFubTz
+0uA2N59ZXquyrfHWUY2PDEbMUttiT+m/aKw3wYKezLOJer9YTU3ddoSe6SbT
+RTTMdKoD22ROXayb1iybiF71cmWLnMRyGI0+eQqGCyMcnNZL/J2ql2c7MJ+O
+BfXo2e7TJ+rYreagBc8vXLWwWu2Xra1cYZu7OKlaoe8vGdE1gYVEkj+2pZ6u
+atcLv9Tx4P+H5Mte9qWrl7DSS0PuUM+yP/+8+2RPkVkm5CfDh7tPd55BKWdn
+cvvz7tPdPdjzfrj/5emjPfW3/ZPXfq6dJzt76sP5ib+FwGGkZ5fP/P3jnzHb
+6aWpL6258mPPdh5j7OLg9PyVjPzyaAeTvHPnGvdv08OJNe3Mu3eTLbJ0rct5
+mutWp0uXG7B3TP/cfDlzukobdkn8ZpdMF5nwmnom6BOvzNSWLbmVLOJAZVpV
+1V6CK01TpadQFeJAkrxf2EYhBq2Wpmyhq5ktoa92YbwD0/wqDkQTmWFp87ww
+SfKA/LZ2+SprKSR8eRDffqX5jXr76v2Rn+7ja79GzmuUJoP2db1WrjK1pm+w
+uFMGBlYYlrYi4pPGFFgeX71zV+mZu4Lzf7S5QXwxWp2Y9soHlBEvs6VqnVun
+QPKidIWbW9NMki9fvNq+flUUw8BwA2viBUiHys1AlGvMxnfMQ+Zqg6+YM3nR
+qLDonKKYsiK23w2biQ+bQg4MFuR0C66xHIscS11ach0QiHlqszQcvEPszXSl
+p7aAH6mpbiAYjGlFBgLyF7pVS6SYBPafLehRu+g/dzUmzaGHaKDBWhMxBpnD
+zhT5D008YyHVYAN3jWH2I362D01M2Ohg+xDyXxUkOpLczNZNywOeMKIJjGGp
+FREOdYfvx0wYHtgyt8h2eHpl2wVRn8Rr4F+br8xEvQysE3+8BPhA0JtZyHx0
+joG3IIYeDrjNdJnUZkrhlh+62iJwIlRPbUsxTC97ofLMfr0kiZWmi8ZFeqJA
+NScvYjPePje6acxyWqzV6Gj7fCvS2Bj8JSxQYb4ywib8mtySvWN0rD/b5Wqp
+3iP8NUvbqg8l/hodv/+wNVZXCwu9ksWtKwiqKNYJ5E0GqIVi9pylLXmKwpaf
+FD4kxe3s/vmRGjXIJ40Rl31Kw8IXQtzXr1tsSmUiDluKb22wfqWb3o97/cmy
+pMMPh2f/oaarVuIHJAoSiV6t5qY0wCQDfdIXs1h6sUOofdjkKluMZS6aZF66
+hpwMS7MkEmgBQMYVCiIKE7Pv5AoWJ9Iq9BoCxwuYQaKNySlnI+VsH6rKmLqB
+bcKdTIIgQLY3Xavczmawe4RGMqsW8YDcIhrmWb3hkuCh6j6W0XwJm8kUwcPU
+3qOmkKkxZTRLpWuae6wGczeraSrzw2B49gY5mEBlBoW8hV+qjnFyas9ibf65
+sjWxn+eWyIBhd8bHq4gQdHGl142qHJSAaJtAml0iWFK4ayqTwZXYvtTCXZG8
+4bJeD6W4s09GTDqeyzfgul97ahb60rpVjYBwhLeALVpK6WNY3b2yHAwOP0yZ
+N4M4RrEUK1LyE/uljE5+CVVIDvZmjaz89WsIrMw4NAKfJbzB9jvl0D6zhdzq
+XFct/WCReyH4XCU2IAkgudQ1+Gp8bouzRmeaQdZVVViyt/2qAiP2szqcqB+Y
+oDNdQ6vAvs0PSeeJ4mZAbq3w3KEZ58UOP99YdZ12pAY1JpQEQogikjyXokEy
+ZJ4rzj77PuMArxWsIQ9iOGf6UEcEhZloEoI3UayglPnWZwxaNDdV4da8ZjC9
+JXSkW4e8LwR4JyTNkQOJMwK/JLwmabqMcgGRhyxMzhDyUcg3rEvGDq2PzRxg
+IPK0cpYS/qx2y8jHgFFzxw5MdrXEuwTGFIOxBJSWBng0FzLN5xBYONFzZKN1
+yRcgNEsFDPs+rT/TzQJLI8I4/joxWDJrbzH623AgxB2wmJbEVhuPWdgIklVD
+yIPoIMTq7R8IFh+ypcB0ltDDEaW1AhknRPvHasPGoB1UiLSMzyVBjQPUR5Mm
+nc35NzCrhZlQts1FriymBqGCpKEiwEWaJQ4IP+Fl5L8vX47sPOX5MB2txT76
+P7gSNdpSKvqLrutEbvBH/qNrW/3dP36Yhuth0r3S/beNN/7+gq9revu/eUYV
+X/0ENEVYqiMgfvlaPU/T6zT9dWOK633y8owVdJ2EGcKf7UBBR8Ulf/Qivmj8
+AnAUnhNzLFQwF7cQ/PAuRg7NZfz0/PXHZvD6yeuP6tYLzIg2vuypB5u6Utwr
+ePHTe28zYhceiA+q/p+oCAgoZaw2bQh+WnHoUQI96xRgDFZu8oBylkaXjQ96
+RZFUSH4G9hqSaEiLqkGGyUyKANXC6NnYK21rWG5RUO4K71UaUYSsdZtCfZJh
+sRoccHiYoJrxKJW8cKwWdr5A8ouRGQRqkQnUCD+2EBMyYK65SeIIzYHKN0B6
+k/CKxZcYbAiWom6YLyjyeBq8/JLXwCbIzWoE5XRoD6CVExUVPyDDI+UOAFL6
+d8AjBMNicgkSJsS8p3uSvDSZpjSee0YAUgmUAA1T2SipSihGWKQvMdWM0soM
+cmx8vuxQVk7tG/Wp9D6v80vK7R0eKpxn3tdMcZifrcpMSr6RmcwnY+VTAZks
+vSPch5kAp11muSjgqDvuJCKVWZ8nPFgKFiYVHEibQyI9ioQq1gGNijTbJjDv
+KyuK/yRTC/zN0CAZWKjPbEtfSObbAoFItpmmNHG1gKoGAqWkJisLykkCd1J1
+EUebrHiJUv36uwU+x/Mmq+1UKkddUE+NZu5JFaqSSBlE9wC3Cpk3AavkZWgS
+CHMDVCZEAmzw7MyDMeq2gJyM+GAtT0Ty/B69pWxRrMhMW+Pdm92GYULiIQZj
+2+D8dWx1Qfk5Na0u2SPydamXwRlErInkZ//uzFDlSVUdogRBEEL4U4dFPf4O
+ScxHClRcJAB1biS2JCc0OvpwfhKq950nAEZjwItmVUs+9iYskiJLuBOv+HR3
+M3IjpH+06ZHlmD8cH14TXN0EnFXenvmfr7A0NVQ3x+OP+99bg1neoALqVt7u
+1j53q5ZSU0TRiKb2rduNaVjfZGPXnNQsTObGeH+NbiHlW5zfIZFYHvGFlC0L
+I2/f+oLqTHOY9jCwkfQwkkp/gCc87FyLc92goRa1BzjUQASbsAqPeJreQ8dU
+k3H1BJtKpAHBJV3el2Q+PHtvD1gw1HKxuyNDGClQE99Wobc5v/kINV13/ZMm
+8qsWE6/akGqoaCt8gSTtuaQ2hWWsSy9Qq5tv+igyofYg83baVcRfHnS/ISwq
+N+5fBHKM9DmJp727h7A0lJqBgwNPBFbNUkI3/DQq4s0lCcOHQkQGPd8s/109
+x1y/BcaGdaxuenhOUNjOSbeCcInQg9P9s10KFPDB36GZGxAxCXEm84W3LMtf
+U2HTuhT/qMHMMTqSPN/n0T4dSfuDgzw3xSgFmmJGFDR4qeVMeuW6JYHQLK1s
+yqxeV1yHLLqKEFVAkdMWwCr0icWPemcbCSVbsc8xxLndHbtXAJe2omkefsv1
+77r6jzDRvrqgMYQfbh5swPi7r/4jTFSpAz9mkebq753If8QTvRlS+R0TDVib
+qL/6ydlYvpci/1ESj/WssdbdvNbVglH/1K1QxwPM3MFaOvnH5A/483+jNUln
+3zmR/+iP1Vqg6A/TWs9agNl3KOwGa3+c1k5kciCNVV7Jj3tf/Ue0/efHumvj
+djC8OVF30ZZ3N7mtLp8Fivx3MhQN3KDIf4SJrkRr/z5FTiwbLxKajyiKb79N
+kf9BO45ikN+k6N4TffKsKb9hHyiSu++g6Aa7G7f3llF0jXDJPh+uwRPxKBUj
+UhkaQrouJwdEd9jl+UGKlc6emhduCudpeMeeMN43dk11X05uYjyeVvrlgkV4
+64v7uGtfGqNWEBwi22ZzhyV90RxNh8FuXcvFuKtpO43rKEn3/a5CV0Dxfl/f
+1wxbNx5eSKfiyploN7MNHXLe/AuQjeArg8Go05nMqH/N+ITRLHVbaB5gnQhq
+CLgmOOf7ElGz+AEgNAhixNvQ7WsReCxFhoqhtuW6eNDF9Bi6oZ1cABTbMBpy
+jd+/pCY7nhEK1sX6N4LVoY9E/GQopBkVa2650yeMZggfc11aFJ3OIBjZVeV2
+QtPe2JKQ0k7J9gwv0m15hr7FYB+XzcHvD/hmFZESOssCqDycxqQD4Isv/BJs
+C04Vup4b36JpTCkNBEJtcyDzd7uKdTUegs6E+SMK1gIIYTe01cEdObu0mHMc
+QKRQxaX4wmBhlgd0J9BySVUjJoJt1NSpSYbglj4eAynPdZ2HikU2u4WHxv5m
+BN3zjqWpa9gT2fXY78JSucGdmaQriLwJR5Y25hIwORXw66gIhk/U0oSgZhq1
+gsKS/nhDbS9DYVHzpnG8O92xR48myVsYTanZs9nW2QnlfALtmvv9noGSwcZN
+SfiDBdzcJ9+kipIdhMyKlBZ1CvpdKOpZBn2KTkRnkTOEMi+0VToxd5UDzN3v
+pcnsslfCOo/6c+NI26VrE8QOafXnodlBMUt3xpnsD5cZq2a1XOoaWu16clIT
+kX+n1CTm7gnvIZhmuAMkxRR9xg0amLKERW+Hvq3k9+sGDc9QLPExAuVKKlfy
+rvoRezBUDDfKWL7jHmVPIx/1CLNQRGtv1E28wUWhm/t840iUvOM2NX0TKeJA
+BC1dtZjbrlTi5HZLkXTrNSI6r3VfG42Q537/s+5N/xEwwz0/ojf/jZUUIQOy
+vHt8Ji9G393z8kDh4X3R+MOAwJ/z3sv5j4fq+vmLm+gkvp7jxYMfj+jFFy8S
+hb9+9QMvfr37S3qRl6Bv/peUDnBM70cByFz0Hse+aKTh0XBnqjtXxTGnWZfZ
+onahqdG1DDprjfZEb9mB7CzdgwnJ44wxuHnB+8/Jd292lrKf2YMV8plu5d7R
+KOqRBzNDEsuo24qA2QBE8YZOh34IljAHPWVjPlJCjZuTV+8PTk+Oxur81QX/
+Yq+k0wN0MwnPafZGXVy8iV7koTfv359djAcfyQOqN0fNFq0B6iydy6AoTgcS
+aUelbCpX+/MjPa0SzJl7O2wqIY781/E7teKDrx3RGP3Pi9MTPzxgAY8OXp6e
++0cdQ8lG07m/GAWZ8GDky1P4uXfah36P8qH6U/eSj3pbz/3bv17ToSs8uZYt
+Uj96y6SrKifEen3MOqmpUL2pCtcTHhEcwgisw2CKni7FjVKA4fjl8DsU3FRv
+B39XP6rD4MgquDIGj2IfjT8duN/5cex25htuxwLxXKrR+fGWz0zZgrEaLHYB
+dRWUUVnv0BZMJO/3Itgh2LP4bKicaiK0pmTrsQlHVUQXHZaQXHt+zPvqZFag
+l6FJDMv7cwRdyUQNXr+rGZ874SxXG9ybvST5kz8+0mXKlIsXf8rDY+Llqgzr
+5M7IZppHbgpVBkHuiXql6YiiFDrROQ06M0SIvCSyea+G4tL5cdehpiOb/RE9
+zrUEGyMy1ZUpCtmZfEeA8p2jppXOc3+KIy7FwLQ/Ori+rWnKmOD8eEIYujEZ
+AFC7Vsf7f5MAaGiTTNMxNdontRxfBAoOzsz0p11FVmCaHN9vjwWZRtoZyNQL
+TKzn0hWXvjPvq1MqtzrOLt6cfnh3GJiDjPs2cd+7lQhDasI4B/DjLj6qJVE6
+90IKR9gyQsrxBuvctdZvtYeDaBAD4X8uvfgMyD02LTvzDDvNvg3u29FRtTMN
+54g4llo5VjjrI6+H7d9ztCyyAgqOyGL7GRlNYXKRRSPkyf+WgJLQrYocpvbJ
+iN9pWNaIyqyiWmgkUZDPR5+2+LQ1H5aeotig3/8CuzeoxxMyAAA=
 
 -->
 

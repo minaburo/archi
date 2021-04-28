@@ -2,7 +2,7 @@
 stand_alone: true
 ipr: trust200902
 docname: draft-pelov-lpwan-architecture-01
-cat: std
+cat: info
 pi:
   symrefs: 'yes'
   sortrefs: 'yes'
@@ -10,9 +10,10 @@ pi:
   compact: 'yes'
   toc: 'yes'
 
-title: LPWAN Static Context Header Compression (SCHC) Architecture
+title: "LPWAN Static Context Header Compression (SCHC) Architecture"
 abbrev: LPWAN Architecture
 wg: lpwan Working Group
+area: Internet
 author:
 - ins: A. Pelov
   name: Alexander Pelov
@@ -37,16 +38,19 @@ author:
   country: France
   email: ana@ackl.io
 normative:
-  rfc8724:
+  rfc8724: SCHC
 informative:
-  rfc7252:
-  rfc8200:
-  rfc8376:
-  rfc8613:
-  rfc9011:
-  I-D.ietf-lpwan-schc-yang-data-model:
-  I-D.ietf-lpwan-coap-static-context-hc:
-  I-D.thubert-lpwan-schc-over-ppp:
+  rfc2516: PPP
+  rfc7252: CoAP
+  rfc7950: YANG
+  rfc8141: URN
+  rfc8200: IPv6
+  rfc8376: Overview
+  rfc8613: OSCORE
+  rfc9011: LoRa
+  I-D.ietf-lpwan-schc-yang-data-model: Model
+  I-D.ietf-lpwan-coap-static-context-hc: SCHC-CoAP
+  I-D.thubert-intarea-schc-over-ppp:
 
 
 
@@ -66,43 +70,93 @@ The core product of the working group is the Static Context Header Compression
 (SCHC) {{rfc8724}} technology.
 
 SCHC provides an extreme compression capability based on a state that must
-match on the compressor and decompressor side. That state if formed of an ordered
-set of Compression/Decompression (C/D) rules. The first rule that matches is used
-to compress, and is indicated with the compression residue. Based on the rule identifier
-(RuleID) the decompressor can rebuild the original bitstream based on the residue.
+match on the compressor and decompressor side.
+This state if formed of an ordered set of Compression/Decompression (C/D) rules.
+The first rule that matches is used to compress, and is indicated with the
+compression residue. Based on the rule identifier (RuleID) the decompressor can
+rebuild the original bitstream based on the residue.
 
 {{rfc8724}} also provides a Fragmentation/Reassembly (F/R) capability, in
 order to cope with constrained (Maximum Transmit Unit (MTU), which is typically
 less than the IPv6 minimum link MTU of 1280 (see section 5 of {{rfc8200}}) on an
 LPWAN network.
 
-As a compression and fragmentation method, SCHC is agnostic to the protocol and
-the layer that employs is. The C/D peers may be different for different layers,
-and the F/R operation may also be performed between different parties, or
-different sub-layers in the same stack. If a protocol or a layer requires
-additional capabilities, it is always possible to document more specifically
-how to use SCHC in that context, or to specify additional behaviours.
+{{rfc8724}} was defined to compress IPv6 and UDP; but SCHC really is a generic
+compression and fragmentation technology. As such, SCHC is agnostic to which
+protocol it compresses and at which layer it is operated. The C/D peers may be
+hosted by different entities for different layers, and the F/R operation may
+also be performed between different parties, or different sub-layers in the same
+stack.
+If a protocol or a layer requires additional capabilities, it is always possible
+to document more specifically how to use SCHC in that context, or to specify
+additional behaviours.
 For instance, {{I-D.ietf-lpwan-coap-static-context-hc}} extends the compression
 to CoAP {{rfc7252}} and OSCORE {{rfc8613}}.
 
 SCHC is also designed to be profiled to adapt to the specific necessities of the
-various LPWAN technologies to which it applies.  Appendix D. "SCHC Parameters"
-of {{rfc8724}} sts the information that needs to be provided in the LPWAN technology-specific documents that provide the profiles.
+various LPWAN technologies to which it is applied. Appendix D. "SCHC Parameters"
+of {{rfc8724}} lists the information that an LPWAN technology-specific document
+must provide to profile SCHC for that technology.
 As an example, {{rfc9011}} provides the profile for LoRaWAN networks.
 
+In order to deploy SCHC, it is mandatory that the C/D and F/R peers are
+provisionned with the exact same set of rules.
+To be able to provision end-points from different vendors, a common data model
+is needed that expresses the SCHC rules in an interoperable fashion. To that
+effect, {{I-D.ietf-lpwan-schc-yang-data-model}} defines a rule representation
+using the YANG {{rfc7950}} formalism.
 
+Finally, section 3 of {{rfc8724}} depicts a typical network architecture for
+an LPWAN network, simplified from that shown in {{rfc8376}}and reproduced in
+{{Fig-LPWANnetarch}}.
+
+~~~~
+ ()   ()   ()       |
+  ()  () () ()     / \       +---------+
+() () () () () () /   \======|    ^    |             +-----------+
+ ()  ()   ()     |           | <--|--> |             |Application|
+()  ()  ()  ()  / \==========|    v    |=============|   Server  |
+  ()  ()  ()   /   \         +---------+             +-----------+
+ Dev            RGWs             NGW                      App
+~~~~
+{: #Fig-LPWANnetarch title='Typical LPWAN Network Architecture'}
+
+Typically, an LPWAN network topology is star-oriented, which means that all
+packets between the same source-destination pair follow the same path from/to a
+central point. In that model, highly constrained Devices (Dev) exchange
+information with LPWAN Application Servers (Apps) through a central Network
+Gateway (NGW), which can be powered and is typically a lot less constrained than
+the Devices.
+Because devices embed built-in applications, the traffic flows to be compressed
+are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the network .
+
+Then again, SCHC is very generic and its applicability is not limited to
+star-oriented deployments and/or to use cases where applications are very static
+and the state can provisionned in advance.
+{{I-D.thubert-intarea-schc-over-ppp}} describes an alternate deployment where
+the C/D and/or F/R operations are performed between peers of equal capabilities
+over a PPP {{rfc2516}} connection. SCHC over PPP  illustrates that with SCHC,
+the protocols that are compressed can be discovered dynamically and the
+rules can be fetched on-demand by both parties from the same Uniform Resource
+Name (URN) {{rfc8141}}, ensuring that the peers use the exact same set of rules.
+
+~~~~
+        +----------+  Wi-Fi /   +----------+                ....
+        |    IP    |  Ethernet  |    IP    |            ..          )
+        |   Host   +-----/------+  Router  +----------(   Internet   )
+        | SCHC C/D |  Serial    | SCHC C/D |            (         )
+        +----------+            +----------+               ...
+                    <-- SCHC -->
+                      over PPP
+~~~~
+{: #Fig-PPPnetarch title='PPP-based SCHC Deployment'}
+
+This document provides a general architecture for a SCHC deployment, positioning
+the required specifications, describing the possible deployment types, and
+indicating models whereby the rules can be distributed and installed to enable
+reliable and scalable operations.
 
 # SCHC Operation {#Operation}
-
-The base operation and the definition of the SCHC C/D & F/R are now described in several documents published by the LPWAN working group.
-
-Among them:
-
-* The {{rfc8724}} defines the generic compression and fragmentation mechanisms for SCHC and applies it to IPv6 and UDP.
-* The {{I-D.ietf-lpwan-coap-static-context-hc}} extend the compression to CoAP and OSCORE.
-* The {{I-D.ietf-lpwan-schc-yang-data-model}} defines a rule representation using the YANG formalism.
-
-
 
 
 As {{I-D.ietf-lpwan-coap-static-context-hc}} states, the SCHC compression and fragmentation mechanism can be implemented at different levels and/or managed by different organizations.
@@ -136,9 +190,6 @@ hides the field structure.
   k C    .  lpwan .     . lpwan  .       .                    .        .
          ..........     ..................                    ..........
              ((((LPWAN))))             ------   Internet  ------
-
-                Figure 3: OSCORE compression/decompression.
-
 ~~~~
 {: #Fig-SCHCCOAP2 title='Different SCHC instances in a global system'}
 
@@ -188,8 +239,6 @@ In any cases, the rules must be the same in both ends to perform C/D and F/R.
  <===| R&D |<=..............................<=| C&F |<===
  ===>| C&F |=>..............................=>| R&D |===>
      +-----+                                  +-----+
-
-
 ~~~~
 {: #Fig-Glob-Arch1 title='Summarized SCHC elements'}
 
@@ -222,7 +271,7 @@ The RM is a application using the Internet to exchange information, therefore:
 
 * for application-level SCHC, routing is involved and global IP addresses SHOULD be used. End-to-end encryption is recommended.
 
-Management messages can also be carried in the negotiation protocol as proposed in {{I-D.thubert-lpwan-schc-over-ppp}}
+Management messages can also be carried in the negotiation protocol as proposed in {{I-D.thubert-intarea-schc-over-ppp}}
 
 The RM traffic may be itself compressed by SCHC, especially if CORECONF is used, {{I-D.ietf-lpwan-coap-static-context-hc}} can be used.
 
