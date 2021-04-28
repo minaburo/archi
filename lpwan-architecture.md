@@ -38,6 +38,12 @@ author:
   email: ana@ackl.io
 normative:
   rfc8724:
+informative:
+  rfc7252:
+  rfc8200:
+  rfc8376:
+  rfc8613:
+  rfc9011:
   I-D.ietf-lpwan-schc-yang-data-model:
   I-D.ietf-lpwan-coap-static-context-hc:
   I-D.thubert-lpwan-schc-over-ppp:
@@ -46,13 +52,49 @@ normative:
 
 --- abstract
 
-This document defines the SCHC architecture.
+This document defines the LPWAN SCHC architecture.
 
 --- middle
 
 # Introduction {#Introduction}
 
-The base operation and the definition of the SCHC compression & Fragmentation are now described in several documents published by the LPWAN working group.
+The IETF LPWAN WG defined the necessary operations to enable IPv6 over
+selected Low-Power Wide Area Networking (LPWAN) radio technologies.
+{{rfc8376}} presents an overview of those technologies.
+
+The core product of the working group is the Static Context Header Compression
+(SCHC) {{rfc8724}} technology.
+
+SCHC provides an extreme compression capability based on a state that must
+match on the compressor and decompressor side. That state if formed of an ordered
+set of Compression/Decompression (C/D) rules. The first rule that matches is used
+to compress, and is indicated with the compression residue. Based on the rule identifier
+(RuleID) the decompressor can rebuild the original bitstream based on the residue.
+
+{{rfc8724}} also provides a Fragmentation/Reassembly (F/R) capability, in
+order to cope with constrained (Maximum Transmit Unit (MTU), which is typically
+less than the IPv6 minimum link MTU of 1280 (see section 5 of {{rfc8200}}) on an
+LPWAN network.
+
+As a compression and fragmentation method, SCHC is agnostic to the protocol and
+the layer that employs is. The C/D peers may be different for different layers,
+and the F/R operation may also be performed between different parties, or
+different sub-layers in the same stack. If a protocol or a layer requires
+additional capabilities, it is always possible to document more specifically
+how to use SCHC in that context, or to specify additional behaviours.
+For instance, {{I-D.ietf-lpwan-coap-static-context-hc}} extends the compression
+to CoAP {{rfc7252}} and OSCORE {{rfc8613}}.
+
+SCHC is also designed to be profiled to adapt to the specific necessities of the
+various LPWAN technologies to which it applies.  Appendix D. "SCHC Parameters"
+of {{rfc8724}} sts the information that needs to be provided in the LPWAN technology-specific documents that provide the profiles.
+As an example, {{rfc9011}} provides the profile for LoRaWAN networks.
+
+
+
+# SCHC Operation {#Operation}
+
+The base operation and the definition of the SCHC C/D & F/R are now described in several documents published by the LPWAN working group.
 
 Among them:
 
@@ -78,13 +120,13 @@ hides the field structure.
   p H    +--------+                                           +--------+
   . V    |  SCHC  |                                           |  SCHC  |
          |  inner |   cryptographical boundary                |  inner |
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
   A S    |  CoAP  |                                           |  CoAP  |
   p C    |  outer |                                           |  outer |
   p H    +--------+                                           +--------+
   . C    |  SCHC  |                                           |  SCHC  |
          |  outer |   functional boundary                     |  outer |
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
   N      .  udp   .                                           .  udp   .
   e      ..........     ..................                    ..........
   t      .  ipv6  .     .      ipv6      .                    .  ipv6  .

@@ -59,7 +59,7 @@
     <abstract>
 
 
-<t>This document defines the SCHC architecture.</t>
+<t>This document defines the LPWAN SCHC architecture.</t>
 
 
 
@@ -73,7 +73,42 @@
 
 <section anchor="Introduction" title="Introduction">
 
-<t>The base operation and the definition of the SCHC compression &amp; Fragmentation are now described in several documents published by the LPWAN working group.</t>
+<t>The IETF LPWAN WG defined the necessary operations to enable IPv6 over
+selected Low-Power Wide Area Networking (LPWAN) radio technologies.
+<xref target="rfc8376"/> presents an overview of those technologies.</t>
+
+<t>The core product of the working group is the Static Context Header Compression
+(SCHC) <xref target="rfc8724"/> technology.</t>
+
+<t>SCHC provides an extreme compression capability based on a state that must
+match on the compressor and decompressor side. That state if formed of an ordered
+set of Compression/Decompression (C/D) rules. The first rule that matches is used
+to compress, and is indicated with the compression residue. Based on the rule identifier
+(RuleID) the decompressor can rebuild the original bitstream based on the residue.</t>
+
+<t><xref target="rfc8724"/> also provides a Fragmentation/Reassembly (F/R) capability, in
+order to cope with constrained (Maximum Transmit Unit (MTU), which is typically
+less than the IPv6 minimum link MTU of 1280 (see section 5 of <xref target="rfc8200"/>) on an
+LPWAN network.</t>
+
+<t>As a compression and fragmentation method, SCHC is agnostic to the protocol and
+the layer that employs is. The C/D peers may be different for different layers,
+and the F/R operation may also be performed between different parties, or
+different sub-layers in the same stack. If a protocol or a layer requires
+additional capabilities, it is always possible to document more specifically
+how to use SCHC in that context, or to specify additional behaviours.
+For instance, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> extends the compression
+to CoAP <xref target="rfc7252"/> and OSCORE <xref target="rfc8613"/>.</t>
+
+<t>SCHC is also designed to be profiled to adapt to the specific necessities of the
+various LPWAN technologies to which it applies.  Appendix D. “SCHC Parameters”
+of <xref target="rfc8724"/> sts the information that needs to be provided in the LPWAN technology-specific documents that provide the profiles.
+As an example, <xref target="rfc9011"/> provides the profile for LoRaWAN networks.</t>
+
+</section>
+<section anchor="Operation" title="SCHC Operation">
+
+<t>The base operation and the definition of the SCHC C/D &amp; F/R are now described in several documents published by the LPWAN working group.</t>
 
 <t>Among them:</t>
 
@@ -96,13 +131,13 @@ hides the field structure.</t>
   p H    +--------+                                           +--------+
   . V    |  SCHC  |                                           |  SCHC  |
          |  inner |   cryptographical boundary                |  inner |
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
   A S    |  CoAP  |                                           |  CoAP  |
   p C    |  outer |                                           |  outer |
   p H    +--------+                                           +--------+
   . C    |  SCHC  |                                           |  SCHC  |
          |  outer |   functional boundary                     |  outer |
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
   N      .  udp   .                                           .  udp   .
   e      ..........     ..................                    ..........
   t      .  ipv6  .     .      ipv6      .                    .  ipv6  .
@@ -234,6 +269,88 @@ is either located in the core network or at the application.</t>
 
 
 
+
+    </references>
+
+    <references title='Informative References'>
+
+
+
+
+
+<reference  anchor="rfc7252" target='https://www.rfc-editor.org/info/rfc7252'>
+<front>
+<title>The Constrained Application Protocol (CoAP)</title>
+<author initials='Z.' surname='Shelby' fullname='Z. Shelby'><organization /></author>
+<author initials='K.' surname='Hartke' fullname='K. Hartke'><organization /></author>
+<author initials='C.' surname='Bormann' fullname='C. Bormann'><organization /></author>
+<date year='2014' month='June' />
+<abstract><t>The Constrained Application Protocol (CoAP) is a specialized web transfer protocol for use with constrained nodes and constrained (e.g., low-power, lossy) networks.  The nodes often have 8-bit microcontrollers with small amounts of ROM and RAM, while constrained networks such as IPv6 over Low-Power Wireless Personal Area Networks (6LoWPANs) often have high packet error rates and a typical throughput of 10s of kbit/s.  The protocol is designed for machine- to-machine (M2M) applications such as smart energy and building automation.</t><t>CoAP provides a request/response interaction model between application endpoints, supports built-in discovery of services and resources, and includes key concepts of the Web such as URIs and Internet media types.  CoAP is designed to easily interface with HTTP for integration with the Web while meeting specialized requirements such as multicast support, very low overhead, and simplicity for constrained environments.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7252'/>
+<seriesInfo name='DOI' value='10.17487/RFC7252'/>
+</reference>
+
+
+
+<reference  anchor="rfc8200" target='https://www.rfc-editor.org/info/rfc8200'>
+<front>
+<title>Internet Protocol, Version 6 (IPv6) Specification</title>
+<author initials='S.' surname='Deering' fullname='S. Deering'><organization /></author>
+<author initials='R.' surname='Hinden' fullname='R. Hinden'><organization /></author>
+<date year='2017' month='July' />
+<abstract><t>This document specifies version 6 of the Internet Protocol (IPv6). It obsoletes RFC 2460.</t></abstract>
+</front>
+<seriesInfo name='STD' value='86'/>
+<seriesInfo name='RFC' value='8200'/>
+<seriesInfo name='DOI' value='10.17487/RFC8200'/>
+</reference>
+
+
+
+<reference  anchor="rfc8376" target='https://www.rfc-editor.org/info/rfc8376'>
+<front>
+<title>Low-Power Wide Area Network (LPWAN) Overview</title>
+<author initials='S.' surname='Farrell' fullname='S. Farrell' role='editor'><organization /></author>
+<date year='2018' month='May' />
+<abstract><t>Low-Power Wide Area Networks (LPWANs) are wireless technologies with characteristics such as large coverage areas, low bandwidth, possibly very small packet and application-layer data sizes, and long battery life operation.  This memo is an informational overview of the set of LPWAN technologies being considered in the IETF and of the gaps that exist between the needs of those technologies and the goal of running IP in LPWANs.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='8376'/>
+<seriesInfo name='DOI' value='10.17487/RFC8376'/>
+</reference>
+
+
+
+<reference  anchor="rfc8613" target='https://www.rfc-editor.org/info/rfc8613'>
+<front>
+<title>Object Security for Constrained RESTful Environments (OSCORE)</title>
+<author initials='G.' surname='Selander' fullname='G. Selander'><organization /></author>
+<author initials='J.' surname='Mattsson' fullname='J. Mattsson'><organization /></author>
+<author initials='F.' surname='Palombini' fullname='F. Palombini'><organization /></author>
+<author initials='L.' surname='Seitz' fullname='L. Seitz'><organization /></author>
+<date year='2019' month='July' />
+<abstract><t>This document defines Object Security for Constrained RESTful Environments (OSCORE), a method for application-layer protection of the Constrained Application Protocol (CoAP), using CBOR Object Signing and Encryption (COSE).  OSCORE provides end-to-end protection between endpoints communicating using CoAP or CoAP-mappable HTTP. OSCORE is designed for constrained nodes and networks supporting a range of proxy operations, including translation between different transport protocols.</t><t>Although an optional functionality of CoAP, OSCORE alters CoAP options processing and IANA registration.  Therefore, this document updates RFC 7252.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='8613'/>
+<seriesInfo name='DOI' value='10.17487/RFC8613'/>
+</reference>
+
+
+
+<reference  anchor="rfc9011" target='https://www.rfc-editor.org/info/rfc9011'>
+<front>
+<title>Static Context Header Compression and Fragmentation (SCHC) over LoRaWAN</title>
+<author initials='O.' surname='Gimenez' fullname='O. Gimenez' role='editor'><organization /></author>
+<author initials='I.' surname='Petrov' fullname='I. Petrov' role='editor'><organization /></author>
+<date year='2021' month='April' />
+<abstract><t>The Static Context Header Compression and fragmentation (SCHC) specification (RFC 8724) describes generic header compression and fragmentation techniques for Low-Power Wide Area Network (LPWAN) technologies. SCHC is a generic mechanism designed for great flexibility so that it can be adapted for any of the LPWAN technologies.</t><t>This document defines a profile of SCHC (RFC 8724) for use in LoRaWAN networks and provides elements such as efficient parameterization and modes of operation.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='9011'/>
+<seriesInfo name='DOI' value='10.17487/RFC9011'/>
+</reference>
+
+
+
 <reference anchor="I-D.ietf-lpwan-schc-yang-data-model">
 <front>
 <title>Data Model for Static Context Header Compression (SCHC)</title>
@@ -300,73 +417,90 @@ is either located in the core network or at the application.</t>
 
 
 
-
   </back>
 
 <!-- ##markdown-source:
-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
+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
+7+wb/MsX/uHKFMUG3f8HC+o71CknAAA=
 
 -->
 

@@ -16,7 +16,7 @@ Expires: 30 October 2021                                   Cisco Systems
 
 Abstract
 
-   This document defines the SCHC architecture.
+   This document defines the LPWAN SCHC architecture.
 
 Status of This Memo
 
@@ -61,18 +61,67 @@ Internet-Draft             LPWAN Architecture                 April 2021
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Definitions . . . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  Global architecture . . . . . . . . . . . . . . . . . . . . .   3
-   4.  Data management . . . . . . . . . . . . . . . . . . . . . . .   4
-   5.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
-   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
+   2.  SCHC Operation  . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  Definitions . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   4.  Global architecture . . . . . . . . . . . . . . . . . . . . .   4
+   5.  Data management . . . . . . . . . . . . . . . . . . . . . . .   5
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   7
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
 
-   The base operation and the definition of the SCHC compression &
-   Fragmentation are now described in several documents published by the
-   LPWAN working group.
+   The IETF LPWAN WG defined the necessary operations to enable IPv6
+   over selected Low-Power Wide Area Networking (LPWAN) radio
+   technologies. [rfc8376] presents an overview of those technologies.
+
+   The core product of the working group is the Static Context Header
+   Compression (SCHC) [rfc8724] technology.
+
+   SCHC provides an extreme compression capability based on a state that
+   must match on the compressor and decompressor side.  That state if
+   formed of an ordered set of Compression/Decompression (C/D) rules.
+   The first rule that matches is used to compress, and is indicated
+   with the compression residue.  Based on the rule identifier (RuleID)
+   the decompressor can rebuild the original bitstream based on the
+   residue.
+
+   [rfc8724] also provides a Fragmentation/Reassembly (F/R) capability,
+   in order to cope with constrained (Maximum Transmit Unit (MTU), which
+   is typically less than the IPv6 minimum link MTU of 1280 (see section
+   5 of [rfc8200]) on an LPWAN network.
+
+   As a compression and fragmentation method, SCHC is agnostic to the
+   protocol and the layer that employs is.  The C/D peers may be
+   different for different layers, and the F/R operation may also be
+   performed between different parties, or different sub-layers in the
+   same stack.  If a protocol or a layer requires additional
+   capabilities, it is always possible to document more specifically how
+   to use SCHC in that context, or to specify additional behaviours.
+   For instance, [I-D.ietf-lpwan-coap-static-context-hc] extends the
+   compression to CoAP [rfc7252] and OSCORE [rfc8613].
+
+   SCHC is also designed to be profiled to adapt to the specific
+   necessities of the various LPWAN technologies to which it applies.
+   Appendix D.  "SCHC Parameters" of [rfc8724] sts the information that
+
+
+
+Pelov, et al.            Expires 30 October 2021                [Page 2]
+
+Internet-Draft             LPWAN Architecture                 April 2021
+
+
+   needs to be provided in the LPWAN technology-specific documents that
+   provide the profiles.  As an example, [rfc9011] provides the profile
+   for LoRaWAN networks.
+
+2.  SCHC Operation
+
+   The base operation and the definition of the SCHC C/D & F/R are now
+   described in several documents published by the LPWAN working group.
 
    Among them:
 
@@ -109,7 +158,14 @@ Table of Contents
 
 
 
-Pelov, et al.            Expires 30 October 2021                [Page 2]
+
+
+
+
+
+
+
+Pelov, et al.            Expires 30 October 2021                [Page 3]
 
 Internet-Draft             LPWAN Architecture                 April 2021
 
@@ -122,13 +178,13 @@ Internet-Draft             LPWAN Architecture                 April 2021
   p H    +--------+                                           +--------+
   . V    |  SCHC  |                                           |  SCHC  |
          |  inner |   cryptographical boundary                |  inner |
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
   A S    |  CoAP  |                                           |  CoAP  |
   p C    |  outer |                                           |  outer |
   p H    +--------+                                           +--------+
   . C    |  SCHC  |                                           |  SCHC  |
          |  outer |   functional boundary                     |  outer |
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
   N      .  udp   .                                           .  udp   .
   e      ..........     ..................                    ..........
   t      .  ipv6  .     .      ipv6      .                    .  ipv6  .
@@ -149,9 +205,9 @@ Internet-Draft             LPWAN Architecture                 April 2021
    the LPWAN woeking group to design an operational and interoperable
    framework for allowing IP application over contrained networks.
 
-2.  Definitions
+3.  Definitions
 
-3.  Global architecture
+4.  Global architecture
 
    As described in [rfc8724] a SCHC service is composed of a Parser,
    analyzing packets and creating a list of fields what will be used to
@@ -165,7 +221,7 @@ Internet-Draft             LPWAN Architecture                 April 2021
 
 
 
-Pelov, et al.            Expires 30 October 2021                [Page 3]
+Pelov, et al.            Expires 30 October 2021                [Page 4]
 
 Internet-Draft             LPWAN Architecture                 April 2021
 
@@ -210,7 +266,7 @@ Internet-Draft             LPWAN Architecture                 April 2021
    To enable rule synchronization between both ends, a common rule
    representation must be defined.
 
-4.  Data management
+5.  Data management
 
    [I-D.ietf-lpwan-schc-yang-data-model] defines an YANG data model to
    represent the rules.  This enables the use of several protocols for
@@ -221,7 +277,7 @@ Internet-Draft             LPWAN Architecture                 April 2021
 
 
 
-Pelov, et al.            Expires 30 October 2021                [Page 4]
+Pelov, et al.            Expires 30 October 2021                [Page 5]
 
 Internet-Draft             LPWAN Architecture                 April 2021
 
@@ -262,11 +318,13 @@ Internet-Draft             LPWAN Architecture                 April 2021
    CORECONF is used, [I-D.ietf-lpwan-coap-static-context-hc] can be
    used.
 
-5.  Acknowledgements
+6.  Acknowledgements
 
    The authors would like to thank (in alphabetic order):
 
-6.  Normative References
+7.  References
+
+7.1.  Normative References
 
 
 
@@ -275,12 +333,18 @@ Internet-Draft             LPWAN Architecture                 April 2021
 
 
 
-
-
-Pelov, et al.            Expires 30 October 2021                [Page 5]
+Pelov, et al.            Expires 30 October 2021                [Page 6]
 
 Internet-Draft             LPWAN Architecture                 April 2021
 
+
+   [rfc8724]  Minaburo, A., Toutain, L., Gomez, C., Barthel, D., and JC.
+              Zúñiga, "SCHC: Generic Framework for Static Context Header
+              Compression and Fragmentation", RFC 8724,
+              DOI 10.17487/RFC8724, April 2020,
+              <https://www.rfc-editor.org/info/rfc8724>.
+
+7.2.  Informative References
 
    [I-D.ietf-lpwan-coap-static-context-hc]
               Minaburo, A., Toutain, L., and R. Andreasen, "LPWAN Static
@@ -303,11 +367,37 @@ Internet-Draft             LPWAN Architecture                 April 2021
               <http://www.ietf.org/internet-drafts/draft-thubert-lpwan-
               schc-over-ppp-01.txt>.
 
-   [rfc8724]  Minaburo, A., Toutain, L., Gomez, C., Barthel, D., and JC.
-              Zúñiga, "SCHC: Generic Framework for Static Context Header
-              Compression and Fragmentation", RFC 8724,
-              DOI 10.17487/RFC8724, April 2020,
-              <https://www.rfc-editor.org/info/rfc8724>.
+   [rfc7252]  Shelby, Z., Hartke, K., and C. Bormann, "The Constrained
+              Application Protocol (CoAP)", RFC 7252,
+              DOI 10.17487/RFC7252, June 2014,
+              <https://www.rfc-editor.org/info/rfc7252>.
+
+   [rfc8200]  Deering, S. and R. Hinden, "Internet Protocol, Version 6
+              (IPv6) Specification", STD 86, RFC 8200,
+              DOI 10.17487/RFC8200, July 2017,
+              <https://www.rfc-editor.org/info/rfc8200>.
+
+   [rfc8376]  Farrell, S., Ed., "Low-Power Wide Area Network (LPWAN)
+              Overview", RFC 8376, DOI 10.17487/RFC8376, May 2018,
+              <https://www.rfc-editor.org/info/rfc8376>.
+
+   [rfc8613]  Selander, G., Mattsson, J., Palombini, F., and L. Seitz,
+              "Object Security for Constrained RESTful Environments
+              (OSCORE)", RFC 8613, DOI 10.17487/RFC8613, July 2019,
+              <https://www.rfc-editor.org/info/rfc8613>.
+
+
+
+
+Pelov, et al.            Expires 30 October 2021                [Page 7]
+
+Internet-Draft             LPWAN Architecture                 April 2021
+
+
+   [rfc9011]  Gimenez, O., Ed. and I. Petrov, Ed., "Static Context
+              Header Compression and Fragmentation (SCHC) over LoRaWAN",
+              RFC 9011, DOI 10.17487/RFC9011, April 2021,
+              <https://www.rfc-editor.org/info/rfc9011>.
 
 Authors' Addresses
 
@@ -327,15 +417,6 @@ Authors' Addresses
    France
 
    Email: pthubert@cisco.com
-
-
-
-
-
-
-Pelov, et al.            Expires 30 October 2021                [Page 6]
-
-Internet-Draft             LPWAN Architecture                 April 2021
 
 
    Ana Minaburo
@@ -364,29 +445,4 @@ Internet-Draft             LPWAN Architecture                 April 2021
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Pelov, et al.            Expires 30 October 2021                [Page 7]
+Pelov, et al.            Expires 30 October 2021                [Page 8]
