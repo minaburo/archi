@@ -11,8 +11,8 @@ Expires: 30 October 2021                                   Cisco Systems
                                                            28 April 2021
 
 
-        LPWAN Static Context Header Compression (SCHC) for CoAP
-               draft-ietf-lpwan-coap-static-context-hc-15
+      LPWAN Static Context Header Compression (SCHC) Architecture
+                   draft-pelov-lpwan-architecture-01
 
 Abstract
 
@@ -55,7 +55,7 @@ Copyright Notice
 
 Pelov, et al.            Expires 30 October 2021                [Page 1]
 
-Internet-Draft           LPWAN CoAP compression               April 2021
+Internet-Draft             LPWAN Architecture                 April 2021
 
 
 Table of Contents
@@ -111,7 +111,7 @@ Table of Contents
 
 Pelov, et al.            Expires 30 October 2021                [Page 2]
 
-Internet-Draft           LPWAN CoAP compression               April 2021
+Internet-Draft             LPWAN Architecture                 April 2021
 
 
          (device)            (NGW)                              (App)
@@ -167,7 +167,7 @@ Internet-Draft           LPWAN CoAP compression               April 2021
 
 Pelov, et al.            Expires 30 October 2021                [Page 3]
 
-Internet-Draft           LPWAN CoAP compression               April 2021
+Internet-Draft             LPWAN Architecture                 April 2021
 
 
    If SCHC compressed packet is too large to be send in a single L2
@@ -223,7 +223,7 @@ Internet-Draft           LPWAN CoAP compression               April 2021
 
 Pelov, et al.            Expires 30 October 2021                [Page 4]
 
-Internet-Draft           LPWAN CoAP compression               April 2021
+Internet-Draft             LPWAN Architecture                 April 2021
 
 
                      create
@@ -279,7 +279,7 @@ Internet-Draft           LPWAN CoAP compression               April 2021
 
 Pelov, et al.            Expires 30 October 2021                [Page 5]
 
-Internet-Draft           LPWAN CoAP compression               April 2021
+Internet-Draft             LPWAN Architecture                 April 2021
 
 
    [I-D.ietf-lpwan-coap-static-context-hc]
@@ -335,7 +335,7 @@ Authors' Addresses
 
 Pelov, et al.            Expires 30 October 2021                [Page 6]
 
-Internet-Draft           LPWAN CoAP compression               April 2021
+Internet-Draft             LPWAN Architecture                 April 2021
 
 
    Ana Minaburo

@@ -11,10 +11,10 @@
 <?rfc compact="yes"?>
 <?rfc toc="yes"?>
 
-<rfc ipr="trust200902" docName="draft-ietf-lpwan-coap-static-context-hc-15" category="std">
+<rfc ipr="trust200902" docName="draft-pelov-lpwan-architecture-01" category="std">
 
   <front>
-    <title abbrev="LPWAN CoAP compression">LPWAN Static Context Header Compression (SCHC) for CoAP</title>
+    <title abbrev="LPWAN Architecture">LPWAN Static Context Header Compression (SCHC) Architecture</title>
 
     <author initials="A." surname="Pelov" fullname="Alexander Pelov">
       <organization>Acklio</organization>
@@ -114,12 +114,12 @@ hides the field structure.</t>
              ((((LPWAN))))             ------   Internet  ------
 
                 Figure 3: OSCORE compression/decompression.
-                               
+
 ]]></artwork></figure>
 
 <t>This document defines a generic architecture for SCHC that can be used at any of these levels.
 The goal of the architectural document is to orchestrate the different protocols and data model
-defined by the LPWAN woeking group to design an operational and interoperable<vspace />
+defined by the LPWAN woeking group to design an operational and interoperable
 framework for allowing IP application over contrained networks.</t>
 
 </section>
@@ -128,20 +128,20 @@ framework for allowing IP application over contrained networks.</t>
 </section>
 <section anchor="global-architecture" title="Global architecture">
 
-<t>As described in  <xref target="rfc8724"/> a SCHC service is composed of a Parser, analyzing 
+<t>As described in  <xref target="rfc8724"/> a SCHC service is composed of a Parser, analyzing
 packets and creating a list of fields what will be used to match against the compression
 rules. If a packet matches rules, compression can be applied following rules instructions.</t>
 
-<t>If SCHC compressed packet is too large to be send in a single L2 frame, fragmentation 
+<t>If SCHC compressed packet is too large to be send in a single L2 frame, fragmentation
 will apply. The process is similar, device rules are checked to find the most appropriate
-fragmentation rule, regarding the SCHC packet size, the link error rate, the reliability 
+fragmentation rule, regarding the SCHC packet size, the link error rate, the reliability
 required by the application, …</t>
 
 <t>On the other direction, when a packet SCHC arrives, the ruleID is used to find the rule.
 Its nature allows to select if it is a compression or fragmentation rule.</t>
 
-<t>The rule database contains a set of rules specific to a single device. The <xref target="rfc8724"/> 
-indicates that the SCHC instance reads the rules to process C/D and F/R, rules are not 
+<t>The rule database contains a set of rules specific to a single device. The <xref target="rfc8724"/>
+indicates that the SCHC instance reads the rules to process C/D and F/R, rules are not
 modified during these actions.</t>
 
 <t>A SCHC instance, summarized in the <xref target="Fig-Glob-Arch1"/>, implies C/D and F/R present in both end.
@@ -151,17 +151,17 @@ is either located in the core network or at the application.</t>
 <t>In any cases, the rules must be the same in both ends to perform C/D and F/R.</t>
 
 <figure title="Summarized SCHC elements" anchor="Fig-Glob-Arch1"><artwork><![CDATA[
-    (device)                                 (core|app) 
+    (device)                                 (core|app)
 
      (---)                                     (---)
      ( r )                                     ( r )
      (---)                                     (---)
         . read                                   . read
         .                                        .
-     +-----+                                  +-----+ 
+     +-----+                                  +-----+
  <===| R&D |<=..............................<=| C&F |<===
  ===>| C&F |=>..............................=>| R&D |===>
-     +-----+                                  +-----+   
+     +-----+                                  +-----+
 
 
 ]]></artwork></figure>
@@ -180,7 +180,7 @@ is either located in the core network or at the application.</t>
        (-------)  update |Manager|   NETCONF, RESTCONF or CORECONF
           . read  delete +=======+   request
           .
-       +-------+ 
+       +-------+
    <===| R & D |<===
    ===>| C & F |===>
        +-------+
@@ -304,70 +304,69 @@ is either located in the core network or at the application.</t>
   </back>
 
 <!-- ##markdown-source:
-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
-DZkCKZYfAAA=
+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
 
 -->
 
