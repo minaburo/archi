@@ -41,6 +41,7 @@ normative:
   rfc8724: SCHC
 informative:
   rfc8200: IPv6
+  rfc7950: YANG
   rfc8376: Overview
   I-D.ietf-lpwan-schc-yang-data-model: Model
   I-D.ietf-lpwan-coap-static-context-hc: SCHC-CoAP
@@ -244,7 +245,7 @@ A SCHC instance, summarized in the {{Fig-Glob-Arch1}}, implies C/D and/or F/R pr
 
 To be able to provision end-points from different vendors, a common rule representation is needed that expresses the SCHC rules in an interoperable
 fashion. To that effect, {{-Model}} defines a rule representation using the
-[YANG](RFC7950) formalism.
+[YANG](#rfc7950) formalism.
 
 {{I-D.ietf-lpwan-schc-yang-data-model}} defines an YANG data model to represent the rules. This enables the use of several protocols for rule management, such as NETCONF{{?RFC6241}}, RESTCONF{{?RFC8040}}, and CORECONF{{-COMI}}. NETCONF uses SSH, RESTCONF uses HTTPS, and CORECONF uses CoAP(s) as their respective transport layer protocols. The data is represented in XML under NETCONF, in JSON{{?RFC8259}} under RESTCONF and in CBOR{{?RFC8949}} under CORECONF.
 

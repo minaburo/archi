@@ -305,7 +305,7 @@ Internet-Draft             LPWAN Architecture                 April 2021
    rule representation is needed that expresses the SCHC rules in an
    interoperable fashion.  To that effect,
    [I-D.ietf-lpwan-schc-yang-data-model] defines a rule representation
-   using the YANG (RFC7950) formalism.
+   using the YANG [rfc7950] formalism.
 
    [I-D.ietf-lpwan-schc-yang-data-model] defines an YANG data model to
    represent the rules.  This enables the use of several protocols for
@@ -455,6 +455,10 @@ Internet-Draft             LPWAN Architecture                 April 2021
               DOI 10.17487/RFC7252, June 2014,
               <https://www.rfc-editor.org/info/rfc7252>.
 
+   [rfc7950]  Bjorklund, M., Ed., "The YANG 1.1 Data Modeling Language",
+              RFC 7950, DOI 10.17487/RFC7950, August 2016,
+              <https://www.rfc-editor.org/info/rfc7950>.
+
    [RFC8040]  Bierman, A., Bjorklund, M., and K. Watsen, "RESTCONF
               Protocol", RFC 8040, DOI 10.17487/RFC8040, January 2017,
               <https://www.rfc-editor.org/info/rfc8040>.
@@ -489,13 +493,9 @@ Internet-Draft             LPWAN Architecture                 April 2021
 
 Authors' Addresses
 
-   Alexander Pelov
-   Acklio
-   1137A avenue des Champs Blancs
-   35510 Cesson-Sevigne Cedex
-   France
 
-   Email: a@ackl.io
+
+
 
 
 
@@ -504,6 +504,15 @@ Authors' Addresses
 Pelov, et al.            Expires 31 October 2021                [Page 9]
 
 Internet-Draft             LPWAN Architecture                 April 2021
+
+
+   Alexander Pelov
+   Acklio
+   1137A avenue des Champs Blancs
+   35510 Cesson-Sevigne Cedex
+   France
+
+   Email: a@ackl.io
 
 
    Pascal Thubert
@@ -522,15 +531,6 @@ Internet-Draft             LPWAN Architecture                 April 2021
    France
 
    Email: ana@ackl.io
-
-
-
-
-
-
-
-
-
 
 
 
