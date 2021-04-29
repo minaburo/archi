@@ -167,8 +167,9 @@ There is thus a SCHC instance per pair of endpoints.
 C/D and F/R before the session starts, and that rules cannot be modified during
 the session.
 
-{{rfc8724}} was defined to compress IPv6 and UDP; but SCHC really is a generic
-compression and fragmentation technology. As such, SCHC is agnostic to which
+{{rfc8724}} was defined to compress [IPv6](#rfc8200) and UDP;
+but SCHC really is a generic compression and fragmentation technology.
+As such, SCHC is agnostic to which
 protocol it compresses and at which layer it is operated. The C/D peers may be
 hosted by different entities for different layers, and the F/R operation may
 also be performed between different parties, or different sub-layers in the same
