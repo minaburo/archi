@@ -62,15 +62,22 @@ The IETF LPWAN WG defined the necessary operations to enable IPv6 over
 selected Low-Power Wide Area Networking (LPWAN) radio technologies.
 {{-Overview}} presents an overview of those technologies.
 
-The Static Context Header Compression (SCHC) {{rfc8724}} technology is the core product of the IETF LPWAN working group.
+The Static Context Header Compression (SCHC) {{rfc8724}} technology is the core
+product of the IETF LPWAN working group. {{rfc8724}} defines a generic framework
+for header compression and fragmentation, based on a static context that is pre-installed on the SCHC endpoints.
 
-This document details the constitutive elements of a SCHC based solution, and how the solution can be deployed.
+This document details the constitutive elements of a SCHC-based solution, and
+how the solution can be deployed. It provides a general architecture for a SCHC
+deployment, positioning the required specifications, describing the possible
+deployment types, and indicating models whereby the rules can be distributed and
+installed to enable reliable and scalable operations.
 
-# Technologies and Profiles
+# LPWAN Technologies and Profiles
 
-Because the SCHC technologies have strict yet distinct constraints, e.g., in
-terms of maximum frame size, throughput, and/or directionality, SCHC must be
-profiled to adapt to the specific necessities of each technology to which it is applied.
+Because LPWAN technologies {{-Overview}} have strict yet distinct constraints,
+e.g., in terms of maximum frame size, throughput, and/or directionality, a SCHC
+instance must be profiled to adapt to the specific necessities of the technology
+to which it is applied.
 
 Appendix D. "SCHC Parameters" of {{rfc8724}} lists the information that an LPWAN
 technology-specific document must provide to profile SCHC for that technology.
@@ -81,7 +88,7 @@ As an example, {{!rfc9011}} provides the SCHC profile for LoRaWAN networks.
 
 [SCHC](#rfc8724) specifies an extreme compression capability based on a state
 that must match on the compressor and decompressor side.
-This state if formed of a set of Compression/Decompression (C/D) rules.
+This state comprises a set of Compression/Decompression (C/D) rules.
 
 The SCHC Parser analyzes incoming packets and creates a list of fields that it
 matches against the compression rules.
@@ -90,26 +97,75 @@ identifier (RuleID) is transmitted together with the compression residue to the 
 Based on the RuleID and the residue, the decompressor can rebuild the original packet and forward it in its uncompressed form over the Internet.
 
 {{rfc8724}} also provides a Fragmentation/Reassembly (F/R) capability to cope
-with the maximum frame size of a Link, which is typically constrained in the
+with the maximum frame size of a Link, which is extremely constrained in the
 case of an LPWAN network.
 
-If a SCHC compressed packet is too large to be sent in a single Link-Layer PDU,
-the SCHC fragmentation is applied on the compressed packet.
-The process is similar, device rules are checked to find the most appropriate
-fragmentation rule, regarding the SCHC packet size, the link error rate, the
-reliability required by the application.
+If a SCHC-compressed packet is too large to be sent in a single Link-Layer PDU,
+the SCHC fragmentation can be applied on the compressed packet.
+The process of SCHC fragmentation is similar to that of compression;
+the fragmentation rules that are programmed for this device are checked to find
+the most appropriate one, regarding the SCHC packet size, the link error rate,
+and the reliability level required by the application.
 
 The nature of a ruleID allows to determine if it is a compression or
 fragmentation rule.
 
 
+# SCHC Endpoints
+
+Section 3 of {{rfc8724}} depicts a typical network architecture for
+an LPWAN network, simplified from that shown in {{rfc8376}} and reproduced in
+{{Fig-LPWANnetarch}}.
+
+~~~~
+ ()   ()   ()       |
+  ()  () () ()     / \       +---------+
+() () () () () () /   \======|    ^    |             +-----------+
+ ()  ()   ()     |           | <--|--> |             |Application|
+()  ()  ()  ()  / \==========|    v    |=============|   Server  |
+  ()  ()  ()   /   \         +---------+             +-----------+
+ Dev            RGWs             NGW                      App
+~~~~
+{: #Fig-LPWANnetarch title='Typical LPWAN Network Architecture'}
+
+Typically, an LPWAN network topology is star-oriented, which means that all
+packets between the same source-destination pair follow the same path from/to a
+central point. In that model, highly constrained Devices (Dev) exchange
+information with LPWAN Application Servers (Apps) through a central Network
+Gateway (NGW), which can be powered and is typically a lot less constrained than
+the Devices.
+Because devices embed built-in applications, the traffic flows to be compressed
+are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the network .
+
+Then again, SCHC is very generic and its applicability is not limited to
+star-oriented deployments and/or to use cases where applications are very static
+and the state can provisionned in advance.
+{{-SCHCoPPP}} describes an alternate deployment where
+the C/D and/or F/R operations are performed between peers of equal capabilities
+over a PPP {{?rfc2516}} connection. SCHC over PPP  illustrates that with SCHC,
+the protocols that are compressed can be discovered dynamically and the
+rules can be fetched on-demand by both parties from the same Uniform Resource
+Name (URN) {{?rfc8141}}, ensuring that the peers use the exact same set of rules.
+
+~~~~
+    +----------+  Wi-Fi /   +----------+                ....
+    |    IP    |  Ethernet  |    IP    |            ..          )
+    |   Host   +-----/------+  Router  +----------(   Internet   )
+    | SCHC C/D |  Serial    | SCHC C/D |            (         )
+    +----------+            +----------+               ...
+                <-- SCHC -->
+                  over PPP
+~~~~
+{: #Fig-PPPnetarch title='PPP-based SCHC Deployment'}
+
 
 # SCHC Instances
 
 The rule database contains a set of rules that are specific per device.
-There is thus a SCHC instance per pair of peers.
-{{rfc8724}} indicates that the SCHC instance reads the rules to process
-C/D and F/R, and that rules are not modified during these actions.
+There is thus a SCHC instance per pair of endpoints.
+{{rfc8724}} states that a SCHC instance obtains the rules to process
+C/D and F/R before the session starts, and that rules cannot be modified during
+the session.
 
 {{rfc8724}} was defined to compress IPv6 and UDP; but SCHC really is a generic
 compression and fragmentation technology. As such, SCHC is agnostic to which
@@ -124,10 +180,10 @@ additional behaviours.
 For instance, {{-SCHC-CoAP}} extends the compression to CoAP {{?RFC7252}} and
 OSCORE {{?RFC8613}}.
 
-As represented figure {{Fig-SCHCCOAP2}}, the fragmentation and teh compression
-of IP and UDP may be operated by a network SCHC instance whereas the end-to-end
-compression of the application payload happens between the device and the
-application. The compression of the application payload may be split in two
+As represented figure {{Fig-SCHCCOAP2}}, the fragmentation and the compression
+of the IP and UDP headers may be operated by a network SCHC instance whereas the
+end-to-end compression of the application payload happens between the device and
+the application. The compression of the application payload may be split in two
 instances to deal with the encrypted portion of the application PDU.
 
 ~~~~
@@ -219,57 +275,6 @@ The RM traffic may be itself compressed by SCHC, especially if CORECONF is used,
 
 
 
-# SCHC Endpoints
-
-Finally, section 3 of {{rfc8724}} depicts a typical network architecture for
-an LPWAN network, simplified from that shown in {{rfc8376}} and reproduced in
-{{Fig-LPWANnetarch}}.
-
-~~~~
- ()   ()   ()       |
-  ()  () () ()     / \       +---------+
-() () () () () () /   \======|    ^    |             +-----------+
- ()  ()   ()     |           | <--|--> |             |Application|
-()  ()  ()  ()  / \==========|    v    |=============|   Server  |
-  ()  ()  ()   /   \         +---------+             +-----------+
- Dev            RGWs             NGW                      App
-~~~~
-{: #Fig-LPWANnetarch title='Typical LPWAN Network Architecture'}
-
-Typically, an LPWAN network topology is star-oriented, which means that all
-packets between the same source-destination pair follow the same path from/to a
-central point. In that model, highly constrained Devices (Dev) exchange
-information with LPWAN Application Servers (Apps) through a central Network
-Gateway (NGW), which can be powered and is typically a lot less constrained than
-the Devices.
-Because devices embed built-in applications, the traffic flows to be compressed
-are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the network .
-
-Then again, SCHC is very generic and its applicability is not limited to
-star-oriented deployments and/or to use cases where applications are very static
-and the state can provisionned in advance.
-{{-SCHCoPPP}} describes an alternate deployment where
-the C/D and/or F/R operations are performed between peers of equal capabilities
-over a PPP {{?rfc2516}} connection. SCHC over PPP  illustrates that with SCHC,
-the protocols that are compressed can be discovered dynamically and the
-rules can be fetched on-demand by both parties from the same Uniform Resource
-Name (URN) {{?rfc8141}}, ensuring that the peers use the exact same set of rules.
-
-~~~~
-    +----------+  Wi-Fi /   +----------+                ....
-    |    IP    |  Ethernet  |    IP    |            ..          )
-    |   Host   +-----/------+  Router  +----------(   Internet   )
-    | SCHC C/D |  Serial    | SCHC C/D |            (         )
-    +----------+            +----------+               ...
-                <-- SCHC -->
-                  over PPP
-~~~~
-{: #Fig-PPPnetarch title='PPP-based SCHC Deployment'}
-
-This document provides a general architecture for a SCHC deployment, positioning
-the required specifications, describing the possible deployment types, and
-indicating models whereby the rules can be distributed and installed to enable
-reliable and scalable operations.
 
 # Security Considerations
 
