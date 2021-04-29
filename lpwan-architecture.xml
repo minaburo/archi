@@ -11,7 +11,7 @@
 <?rfc compact="yes"?>
 <?rfc toc="yes"?>
 
-<rfc ipr="trust200902" docName="draft-pelov-lpwan-architecture-01" category="info">
+<rfc ipr="trust200902" docName="draft-pelov-lpwan-architecture-02" category="info">
 
   <front>
     <title abbrev="LPWAN Architecture">LPWAN Static Context Header Compression (SCHC) Architecture</title>
@@ -50,10 +50,10 @@
       </address>
     </author>
 
-    <date year="2021" month="April" day="28"/>
+    <date year="2021" month="April" day="29"/>
 
     <area>Internet</area>
-    <workgroup>lpwan Working Group</workgroup>
+    <workgroup>LPWAN Working Group</workgroup>
     
 
     <abstract>
@@ -71,55 +71,168 @@
   <middle>
 
 
-<section anchor="Introduction" title="Introduction">
+<section anchor="Introduction"><name>Introduction</name>
 
 <t>The IETF LPWAN WG defined the necessary operations to enable IPv6 over
 selected Low-Power Wide Area Networking (LPWAN) radio technologies.
 <xref target="rfc8376"/> presents an overview of those technologies.</t>
 
-<t>The core product of the working group is the Static Context Header Compression
-(SCHC) <xref target="rfc8724"/> technology.</t>
+<t>The Static Context Header Compression (SCHC) <xref target="rfc8724"/> technology is the core product of the IETF LPWAN working group.</t>
 
-<t>SCHC provides an extreme compression capability based on a state that must
-match on the compressor and decompressor side.
-This state if formed of an ordered set of Compression/Decompression (C/D) rules.
-The first rule that matches is used to compress, and is indicated with the
-compression residue. Based on the rule identifier (RuleID) the decompressor can
-rebuild the original bitstream based on the residue.</t>
+<t>This document details the constitutive elements of a SCHC based solution, and how the solution can be deployed.</t>
+
+</section>
+<section anchor="technologies-and-profiles"><name>Technologies and Profiles</name>
+
+<t>Because the SCHC technologies have strict yet distinct constraints, e.g., in
+terms of maximum frame size, throughput, and/or directionality, SCHC must be
+profiled to adapt to the specific necessities of each technology to which it is applied.</t>
+
+<t>Appendix D. "SCHC Parameters" of <xref target="rfc8724"/> lists the information that an LPWAN
+technology-specific document must provide to profile SCHC for that technology.</t>
+
+<t>As an example, <xref target="rfc9011"/> provides the SCHC profile for LoRaWAN networks.</t>
+
+</section>
+<section anchor="the-static-context-header-compression"><name>The Static Context Header Compression</name>
+
+<t><xref target="rfc8724">SCHC</xref> specifies an extreme compression capability based on a state
+that must match on the compressor and decompressor side.
+This state if formed of a set of Compression/Decompression (C/D) rules.</t>
+
+<t>The SCHC Parser analyzes incoming packets and creates a list of fields that it
+matches against the compression rules.
+The rule that matches best is used to compress the packet, and the rule
+identifier (RuleID) is transmitted together with the compression residue to the decompressor.
+Based on the RuleID and the residue, the decompressor can rebuild the original packet and forward it in its uncompressed form over the Internet.</t>
 
 <t><xref target="rfc8724"/> also provides a Fragmentation/Reassembly (F/R) capability to cope
-with a constrained Maximum Transmit Unit (MTU) below the IPv6 minimum link MTU
-of 1280 bytes (see section 5 of <xref target="rfc8200"/>), which is typically the case on an
-LPWAN network.</t>
+with the maximum frame size of a Link, which is typically constrained in the
+case of an LPWAN network.</t>
+
+<t>If a SCHC compressed packet is too large to be sent in a single Link-Layer PDU,
+the SCHC fragmentation is applied on the compressed packet.
+The process is similar, device rules are checked to find the most appropriate
+fragmentation rule, regarding the SCHC packet size, the link error rate, the
+reliability required by the application.</t>
+
+<t>The nature of a ruleID allows to determine if it is a compression or
+fragmentation rule.</t>
+
+</section>
+<section anchor="schc-instances"><name>SCHC Instances</name>
+
+<t>The rule database contains a set of rules that are specific per device.
+There is thus a SCHC instance per pair of peers.
+<xref target="rfc8724"/> indicates that the SCHC instance reads the rules to process
+C/D and F/R, and that rules are not modified during these actions.</t>
 
 <t><xref target="rfc8724"/> was defined to compress IPv6 and UDP; but SCHC really is a generic
 compression and fragmentation technology. As such, SCHC is agnostic to which
 protocol it compresses and at which layer it is operated. The C/D peers may be
 hosted by different entities for different layers, and the F/R operation may
 also be performed between different parties, or different sub-layers in the same
-stack.</t>
+stack, and/or managed by different organizations.</t>
 
 <t>If a protocol or a layer requires additional capabilities, it is always possible
 to document more specifically how to use SCHC in that context, or to specify
 additional behaviours.
-For instance, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> extends the compression
-to CoAP <xref target="rfc7252"/> and OSCORE <xref target="rfc8613"/>.</t>
+For instance, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> extends the compression to CoAP <xref target="RFC7252"/> and
+OSCORE <xref target="RFC8613"/>.</t>
 
-<t>SCHC is also designed to be profiled to adapt to the specific necessities of the
-various LPWAN technologies to which it is applied. Appendix D. “SCHC Parameters”
-of <xref target="rfc8724"/> lists the information that an LPWAN technology-specific document
-must provide to profile SCHC for that technology.
-As an example, <xref target="rfc9011"/> provides the profile for LoRaWAN networks.</t>
+<t>As represented figure <xref target="Fig-SCHCCOAP2"/>, the fragmentation and teh compression
+of IP and UDP may be operated by a network SCHC instance whereas the end-to-end
+compression of the application payload happens between the device and the
+application. The compression of the application payload may be split in two
+instances to deal with the encrypted portion of the application PDU.</t>
 
-<t>In order to deploy SCHC, it is mandatory that the C/D and F/R peers are
-provisionned with the exact same set of rules.
-To be able to provision end-points from different vendors, a common data model
-is needed that expresses the SCHC rules in an interoperable fashion. To that
-effect, <xref target="I-D.ietf-lpwan-schc-yang-data-model"/> defines a rule representation
-using the YANG <xref target="rfc7950"/> formalism.</t>
+<figure title="Different SCHC instances in a global system" anchor="Fig-SCHCCOAP2"><artwork><![CDATA[
+         (device)            (NGW)                              (App)
+
+         +--------+                                           +--------+
+  A S    |  CoAP  |                                           |  CoAP  |
+  p C    |  inner |                                           |  inner |
+  p H    +--------+                                           +--------+
+  . C    |  SCHC  |                                           |  SCHC  |
+         |  inner |   cryptographical boundary                |  inner |
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
+  A S    |  CoAP  |                                           |  CoAP  |
+  p C    |  outer |                                           |  outer |
+  p H    +--------+                                           +--------+
+  . C    |  SCHC  |                                           |  SCHC  |
+         |  outer |   layer / functional boundary             |  outer |
+ -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
+  N      .  UDP   .                                           .  UDP   .
+  e      ..........     ..................                    ..........
+  t      .  IPv6  .     .      IPv6      .                    .  IPv6  .
+  w S    ..........     ..................                    ..........
+  o C    .  SCHC  .     .  SCHC  .       .                    .        .
+  r H    ..........     ..........       .                    .        .
+  k C    .  LPWAN .     . LPWAN  .       .                    .        .
+         ..........     ..................                    ..........
+             ((((LPWAN))))             ------   Internet  ------
+]]></artwork></figure>
+
+<t>This document defines a generic architecture for SCHC that can be used at any of these levels.
+The goal of the architectural document is to orchestrate the different protocols and data model
+defined by the LPWAN woeking group to design an operational and interoperable
+framework for allowing IP application over contrained networks.</t>
+
+</section>
+<section anchor="schc-data-model"><name>SCHC Data Model</name>
+
+<t>A SCHC instance, summarized in the <xref target="Fig-Glob-Arch1"/>, implies C/D and/or F/R present in both end and that both ends are provisionned with the same set of rules.</t>
+
+<figure title="Summarized SCHC elements" anchor="Fig-Glob-Arch1"><artwork><![CDATA[
+       (-------)                                (-------)
+       ( Rules )                                ( Rules )
+       (-------)                                (-------)
+        . read                                   . read
+        .                                        .
+       +-------+                                +-------+
+   <===| R & D |<===                        <===| C & F |<===
+   ===>| C & F |===>                        ===>| R & D |===>
+       +-------+                                +-------+
+       +-------+
+]]></artwork></figure>
+
+<t>To be able to provision end-points from different vendors, a common rule representation is needed that expresses the SCHC rules in an interoperable
+fashion. To that effect, <xref target="I-D.ietf-lpwan-schc-yang-data-model"/> defines a rule representation using the
+<eref target="RFC7950">YANG</eref> formalism.</t>
+
+<t><xref target="I-D.ietf-lpwan-schc-yang-data-model"/> defines an YANG data model to represent the rules. This enables the use of several protocols for rule management, such as NETCONF<xref target="RFC6241"/>, RESTCONF<xref target="RFC8040"/>, and CORECONF<xref target="I-D.ietf-core-comi"/>. NETCONF uses SSH, RESTCONF uses HTTPS, and CORECONF uses CoAP(s) as their respective transport layer protocols. The data is represented in XML under NETCONF, in JSON<xref target="RFC8259"/> under RESTCONF and in CBOR<xref target="RFC8949"/> under CORECONF.</t>
+
+<figure title="Summerized SCHC elements" anchor="Fig-RM"><artwork><![CDATA[
+                  create
+       (-------)  read   +=======+ *
+       ( rules )<------->|Rule   |<--|-------->
+       (-------)  update |Manager|   NETCONF, RESTCONF or CORECONF
+          . read  delete +=======+   request
+          .
+       +-------+
+   <===| R & D |<===
+   ===>| C & F |===>
+       +-------+
+]]></artwork></figure>
+
+<t>The Rule Manager (RM) is in charge of handling data derived from the YANG Data
+Model and apply changes to the rules database <xref target="Fig-RM"/>.</t>
+
+<t>The RM is a application using the Internet to exchange information, therefore:</t>
+
+<t><list style="symbols">
+  <t>for the network-level SCHC, the communication does not require routing. Each of the end-points having an RM and both RMs can be viewed on the same link, therefore wellknown Link Local addresses can be used to identify the device and the core RM. L2 security MAY be deemed as sufficient, if it provides the necessary level of protection.</t>
+  <t>for application-level SCHC, routing is involved and global IP addresses SHOULD be used. End-to-end encryption is RECOMMENDED.</t>
+</list></t>
+
+<t>Management messages can also be carried in the negotiation protocol as proposed in <xref target="I-D.thubert-intarea-schc-over-ppp"/>.
+The RM traffic may be itself compressed by SCHC, especially if CORECONF is used, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> can be used.</t>
+
+</section>
+<section anchor="schc-endpoints"><name>SCHC Endpoints</name>
 
 <t>Finally, section 3 of <xref target="rfc8724"/> depicts a typical network architecture for
-an LPWAN network, simplified from that shown in <xref target="rfc8376"/>and reproduced in
+an LPWAN network, simplified from that shown in <xref target="rfc8376"/> and reproduced in
 <xref target="Fig-LPWANnetarch"/>.</t>
 
 <figure title="Typical LPWAN Network Architecture" anchor="Fig-LPWANnetarch"><artwork><![CDATA[
@@ -152,13 +265,13 @@ rules can be fetched on-demand by both parties from the same Uniform Resource
 Name (URN) <xref target="rfc8141"/>, ensuring that the peers use the exact same set of rules.</t>
 
 <figure title="PPP-based SCHC Deployment" anchor="Fig-PPPnetarch"><artwork><![CDATA[
-        +----------+  Wi-Fi /   +----------+                ....
-        |    IP    |  Ethernet  |    IP    |            ..          )
-        |   Host   +-----/------+  Router  +----------(   Internet   )
-        | SCHC C/D |  Serial    | SCHC C/D |            (         )
-        +----------+            +----------+               ...
-                    <-- SCHC -->
-                      over PPP
+    +----------+  Wi-Fi /   +----------+                ....
+    |    IP    |  Ethernet  |    IP    |            ..          )
+    |   Host   +-----/------+  Router  +----------(   Internet   )
+    | SCHC C/D |  Serial    | SCHC C/D |            (         )
+    +----------+            +----------+               ...
+                <-- SCHC -->
+                  over PPP
 ]]></artwork></figure>
 
 <t>This document provides a general architecture for a SCHC deployment, positioning
@@ -167,121 +280,21 @@ indicating models whereby the rules can be distributed and installed to enable
 reliable and scalable operations.</t>
 
 </section>
-<section anchor="Operation" title="SCHC Operation">
+<section anchor="security-considerations"><name>Security Considerations</name>
 
-<t>As <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> states, the SCHC compression and fragmentation mechanism can be implemented at different levels and/or managed by different organizations.
-For instance, as represented figure <xref target="Fig-SCHCCOAP2"/>, IP compression and fragmentation may be managed by the network SCHC instance and end-to-end  compression between the device and the application. The former can itself be split in two instances since encryption
-hides the field structure.</t>
-
-<figure title="Different SCHC instances in a global system" anchor="Fig-SCHCCOAP2"><artwork><![CDATA[
-         (device)            (NGW)                              (App)
-
-         +--------+                                           +--------+
-  A S    |  CoAP  |                                           |  CoAP  |
-  p C    |  inner |                                           |  inner |
-  p H    +--------+                                           +--------+
-  . V    |  SCHC  |                                           |  SCHC  |
-         |  inner |   cryptographical boundary                |  inner |
- -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
-  A S    |  CoAP  |                                           |  CoAP  |
-  p C    |  outer |                                           |  outer |
-  p H    +--------+                                           +--------+
-  . C    |  SCHC  |                                           |  SCHC  |
-         |  outer |   functional boundary                     |  outer |
- -._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
-  N      .  udp   .                                           .  udp   .
-  e      ..........     ..................                    ..........
-  t      .  ipv6  .     .      ipv6      .                    .  ipv6  .
-  w C    ..........     ..................                    ..........
-  o S    .  schc  .     .  schc  .       .                    .        .
-  r H    ..........     ..........       .                    .        .
-  k C    .  lpwan .     . lpwan  .       .                    .        .
-         ..........     ..................                    ..........
-             ((((LPWAN))))             ------   Internet  ------
-]]></artwork></figure>
-
-<t>This document defines a generic architecture for SCHC that can be used at any of these levels.
-The goal of the architectural document is to orchestrate the different protocols and data model
-defined by the LPWAN woeking group to design an operational and interoperable
-framework for allowing IP application over contrained networks.</t>
+<t>SCHC is sensitive to the rules that could be abused to form arbitrary long
+messages or as a form of attack against the C/D and/or F/R functions, say to
+generate a buffer overflow and either modify the device or crash it. It is
+thus critical to ensure that the rules are distributed in a fashion that is
+protected against tempering, e.g., encrypted and signed.</t>
 
 </section>
-<section anchor="definitions" title="Definitions">
+<section anchor="iana-consideration"><name>IANA Consideration</name>
+
+<t>This document has no request to IANA</t>
 
 </section>
-<section anchor="global-architecture" title="Global architecture">
-
-<t>As described in  <xref target="rfc8724"/> a SCHC service is composed of a Parser, analyzing
-packets and creating a list of fields what will be used to match against the compression
-rules. If a packet matches rules, compression can be applied following rules instructions.</t>
-
-<t>If SCHC compressed packet is too large to be send in a single L2 frame, fragmentation
-will apply. The process is similar, device rules are checked to find the most appropriate
-fragmentation rule, regarding the SCHC packet size, the link error rate, the reliability
-required by the application, …</t>
-
-<t>On the other direction, when a packet SCHC arrives, the ruleID is used to find the rule.
-Its nature allows to select if it is a compression or fragmentation rule.</t>
-
-<t>The rule database contains a set of rules specific to a single device. The <xref target="rfc8724"/>
-indicates that the SCHC instance reads the rules to process C/D and F/R, rules are not
-modified during these actions.</t>
-
-<t>A SCHC instance, summarized in the <xref target="Fig-Glob-Arch1"/>, implies C/D and F/R present in both end.
-The device connected to a constrained network is in one end and the other end
-is either located in the core network or at the application.</t>
-
-<t>In any cases, the rules must be the same in both ends to perform C/D and F/R.</t>
-
-<figure title="Summarized SCHC elements" anchor="Fig-Glob-Arch1"><artwork><![CDATA[
-    (device)                                 (core|app)
-
-     (---)                                     (---)
-     ( r )                                     ( r )
-     (---)                                     (---)
-        . read                                   . read
-        .                                        .
-     +-----+                                  +-----+
- <===| R&D |<=..............................<=| C&F |<===
- ===>| C&F |=>..............................=>| R&D |===>
-     +-----+                                  +-----+
-]]></artwork></figure>
-
-<t>To enable rule synchronization between both ends, a common rule representation must be defined.</t>
-
-</section>
-<section anchor="data-management" title="Data management">
-
-<t><xref target="I-D.ietf-lpwan-schc-yang-data-model"/> defines an YANG data model to represent the rules. This enables the use of several protocols for rule management, such as NETCONF, RESTCONF and CORECONF. NETCONF uses SSH, RESTCONF uses HTTPS, and CORECONF uses CoAP(s) as their respective transport layer protocols. The data is represented in XML under NETCONF, in JSON under RESTCONF and in CBOR under CORECONF.</t>
-
-<figure title="Summerized SCHC elements" anchor="Fig-RM"><artwork><![CDATA[
-                  create
-       (-------)  read   +=======+ *
-       ( rules )<------->|Rule   |<--|-------->
-       (-------)  update |Manager|   NETCONF, RESTCONF or CORECONF
-          . read  delete +=======+   request
-          .
-       +-------+
-   <===| R & D |<===
-   ===>| C & F |===>
-       +-------+
-]]></artwork></figure>
-
-<t>Rule Manager (RM) is in charge of handling data derived from the YANG Data Model and apply changes to the rules database <xref target="Fig-RM"/>.</t>
-
-<t>The RM is a application using the Internet to exchange information, therefore:</t>
-
-<t><list style="symbols">
-  <t>for the network-level SCHC, the communication does not require routing. Each of the end-points having an RM and both RMs can be viewed on the same link, therefore wellknown Link Local addresses can be used to identify the device and the core RM. L2 security MAY be deemed as sufficient, if it provides the necessary level of protection.</t>
-  <t>for application-level SCHC, routing is involved and global IP addresses SHOULD be used. End-to-end encryption is recommended.</t>
-</list></t>
-
-<t>Management messages can also be carried in the negotiation protocol as proposed in <xref target="I-D.thubert-intarea-schc-over-ppp"/></t>
-
-<t>The RM traffic may be itself compressed by SCHC, especially if CORECONF is used, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> can be used.</t>
-
-</section>
-<section anchor="acknowledgements" title="Acknowledgements">
+<section anchor="acknowledgements"><name>Acknowledgements</name>
 
 <t>The authors would like to thank (in alphabetic order):</t>
 
@@ -315,72 +328,26 @@ is either located in the core network or at the application.</t>
 
 
 
+<reference  anchor="rfc9011" target='https://www.rfc-editor.org/info/rfc9011'>
+<front>
+<title>Static Context Header Compression and Fragmentation (SCHC) over LoRaWAN</title>
+<author initials='O.' surname='Gimenez' fullname='O. Gimenez' role='editor'><organization /></author>
+<author initials='I.' surname='Petrov' fullname='I. Petrov' role='editor'><organization /></author>
+<date year='2021' month='April' />
+<abstract><t>The Static Context Header Compression and fragmentation (SCHC) specification (RFC 8724) describes generic header compression and fragmentation techniques for Low-Power Wide Area Network (LPWAN) technologies. SCHC is a generic mechanism designed for great flexibility so that it can be adapted for any of the LPWAN technologies.</t><t>This document defines a profile of SCHC (RFC 8724) for use in LoRaWAN networks and provides elements such as efficient parameterization and modes of operation.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='9011'/>
+<seriesInfo name='DOI' value='10.17487/RFC9011'/>
+</reference>
+
+
+
 
     </references>
 
     <references title='Informative References'>
 
 
-
-
-
-<reference  anchor="rfc2516" target='https://www.rfc-editor.org/info/rfc2516'>
-<front>
-<title>A Method for Transmitting PPP Over Ethernet (PPPoE)</title>
-<author initials='L.' surname='Mamakos' fullname='L. Mamakos'><organization /></author>
-<author initials='K.' surname='Lidl' fullname='K. Lidl'><organization /></author>
-<author initials='J.' surname='Evarts' fullname='J. Evarts'><organization /></author>
-<author initials='D.' surname='Carrel' fullname='D. Carrel'><organization /></author>
-<author initials='D.' surname='Simone' fullname='D. Simone'><organization /></author>
-<author initials='R.' surname='Wheeler' fullname='R. Wheeler'><organization /></author>
-<date year='1999' month='February' />
-<abstract><t>This document describes how to build PPP sessions and encapsulate PPP packets over Ethernet. This memo provides information for the Internet community.</t></abstract>
-</front>
-<seriesInfo name='RFC' value='2516'/>
-<seriesInfo name='DOI' value='10.17487/RFC2516'/>
-</reference>
-
-
-
-<reference  anchor="rfc7252" target='https://www.rfc-editor.org/info/rfc7252'>
-<front>
-<title>The Constrained Application Protocol (CoAP)</title>
-<author initials='Z.' surname='Shelby' fullname='Z. Shelby'><organization /></author>
-<author initials='K.' surname='Hartke' fullname='K. Hartke'><organization /></author>
-<author initials='C.' surname='Bormann' fullname='C. Bormann'><organization /></author>
-<date year='2014' month='June' />
-<abstract><t>The Constrained Application Protocol (CoAP) is a specialized web transfer protocol for use with constrained nodes and constrained (e.g., low-power, lossy) networks.  The nodes often have 8-bit microcontrollers with small amounts of ROM and RAM, while constrained networks such as IPv6 over Low-Power Wireless Personal Area Networks (6LoWPANs) often have high packet error rates and a typical throughput of 10s of kbit/s.  The protocol is designed for machine- to-machine (M2M) applications such as smart energy and building automation.</t><t>CoAP provides a request/response interaction model between application endpoints, supports built-in discovery of services and resources, and includes key concepts of the Web such as URIs and Internet media types.  CoAP is designed to easily interface with HTTP for integration with the Web while meeting specialized requirements such as multicast support, very low overhead, and simplicity for constrained environments.</t></abstract>
-</front>
-<seriesInfo name='RFC' value='7252'/>
-<seriesInfo name='DOI' value='10.17487/RFC7252'/>
-</reference>
-
-
-
-<reference  anchor="rfc7950" target='https://www.rfc-editor.org/info/rfc7950'>
-<front>
-<title>The YANG 1.1 Data Modeling Language</title>
-<author initials='M.' surname='Bjorklund' fullname='M. Bjorklund' role='editor'><organization /></author>
-<date year='2016' month='August' />
-<abstract><t>YANG is a data modeling language used to model configuration data, state data, Remote Procedure Calls, and notifications for network management protocols.  This document describes the syntax and semantics of version 1.1 of the YANG language.  YANG version 1.1 is a maintenance release of the YANG language, addressing ambiguities and defects in the original specification.  There are a small number of backward incompatibilities from YANG version 1.  This document also specifies the YANG mappings to the Network Configuration Protocol (NETCONF).</t></abstract>
-</front>
-<seriesInfo name='RFC' value='7950'/>
-<seriesInfo name='DOI' value='10.17487/RFC7950'/>
-</reference>
-
-
-
-<reference  anchor="rfc8141" target='https://www.rfc-editor.org/info/rfc8141'>
-<front>
-<title>Uniform Resource Names (URNs)</title>
-<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
-<author initials='J.' surname='Klensin' fullname='J. Klensin'><organization /></author>
-<date year='2017' month='April' />
-<abstract><t>A Uniform Resource Name (URN) is a Uniform Resource Identifier (URI) that is assigned under the &quot;urn&quot; URI scheme and a particular URN namespace, with the intent that the URN will be a persistent, location-independent resource identifier.  With regard to URN syntax, this document defines the canonical syntax for URNs (in a way that is consistent with URI syntax), specifies methods for determining URN-equivalence, and discusses URI conformance.  With regard to URN namespaces, this document specifies a method for defining a URN namespace and associating it with a namespace identifier, and it describes procedures for registering namespace identifiers with the Internet Assigned Numbers Authority (IANA).  This document obsoletes both RFCs 2141 and 3406.</t></abstract>
-</front>
-<seriesInfo name='RFC' value='8141'/>
-<seriesInfo name='DOI' value='10.17487/RFC8141'/>
-</reference>
 
 
 
@@ -408,36 +375,6 @@ is either located in the core network or at the application.</t>
 </front>
 <seriesInfo name='RFC' value='8376'/>
 <seriesInfo name='DOI' value='10.17487/RFC8376'/>
-</reference>
-
-
-
-<reference  anchor="rfc8613" target='https://www.rfc-editor.org/info/rfc8613'>
-<front>
-<title>Object Security for Constrained RESTful Environments (OSCORE)</title>
-<author initials='G.' surname='Selander' fullname='G. Selander'><organization /></author>
-<author initials='J.' surname='Mattsson' fullname='J. Mattsson'><organization /></author>
-<author initials='F.' surname='Palombini' fullname='F. Palombini'><organization /></author>
-<author initials='L.' surname='Seitz' fullname='L. Seitz'><organization /></author>
-<date year='2019' month='July' />
-<abstract><t>This document defines Object Security for Constrained RESTful Environments (OSCORE), a method for application-layer protection of the Constrained Application Protocol (CoAP), using CBOR Object Signing and Encryption (COSE).  OSCORE provides end-to-end protection between endpoints communicating using CoAP or CoAP-mappable HTTP. OSCORE is designed for constrained nodes and networks supporting a range of proxy operations, including translation between different transport protocols.</t><t>Although an optional functionality of CoAP, OSCORE alters CoAP options processing and IANA registration.  Therefore, this document updates RFC 7252.</t></abstract>
-</front>
-<seriesInfo name='RFC' value='8613'/>
-<seriesInfo name='DOI' value='10.17487/RFC8613'/>
-</reference>
-
-
-
-<reference  anchor="rfc9011" target='https://www.rfc-editor.org/info/rfc9011'>
-<front>
-<title>Static Context Header Compression and Fragmentation (SCHC) over LoRaWAN</title>
-<author initials='O.' surname='Gimenez' fullname='O. Gimenez' role='editor'><organization /></author>
-<author initials='I.' surname='Petrov' fullname='I. Petrov' role='editor'><organization /></author>
-<date year='2021' month='April' />
-<abstract><t>The Static Context Header Compression and fragmentation (SCHC) specification (RFC 8724) describes generic header compression and fragmentation techniques for Low-Power Wide Area Network (LPWAN) technologies. SCHC is a generic mechanism designed for great flexibility so that it can be adapted for any of the LPWAN technologies.</t><t>This document defines a profile of SCHC (RFC 8724) for use in LoRaWAN networks and provides elements such as efficient parameterization and modes of operation.</t></abstract>
-</front>
-<seriesInfo name='RFC' value='9011'/>
-<seriesInfo name='DOI' value='10.17487/RFC9011'/>
 </reference>
 
 
@@ -496,6 +433,156 @@ is either located in the core network or at the application.</t>
 
 
 
+<reference anchor="I-D.ietf-core-comi">
+<front>
+<title>CoAP Management Interface (CORECONF)</title>
+<author initials='M' surname='Veillette' fullname='Michel Veillette'>
+<organization />
+</author>
+<author initials='P' surname='Stok' fullname='Peter van der Stok'>
+<organization />
+</author>
+<author initials='A' surname='Pelov' fullname='Alexander Pelov'>
+<organization />
+</author>
+<author initials='A' surname='Bierman' fullname='Andy Bierman'>
+<organization />
+</author>
+<author initials='I' surname='Petrov' fullname='Ivaylo Petrov'>
+<organization />
+</author>
+<date year='2021' month='January' day='17' />
+<abstract><t>This document describes a network management interface for constrained devices and networks, called CoAP Management Interface (CORECONF).  The Constrained Application Protocol (CoAP) is used to access datastore and data node resources specified in YANG, or SMIv2 converted to YANG.  CORECONF uses the YANG to CBOR mapping and converts YANG identifier strings to numeric identifiers for payload size reduction.  CORECONF extends the set of YANG based protocols, NETCONF and RESTCONF, with the capability to manage constrained devices and networks.</t></abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-ietf-core-comi-11'/>
+<format type='TXT' target='https://www.ietf.org/internet-drafts/draft-ietf-core-comi-11.txt'/>
+</reference>
+
+
+
+<reference  anchor="RFC7252" target='https://www.rfc-editor.org/info/rfc7252'>
+<front>
+<title>The Constrained Application Protocol (CoAP)</title>
+<author initials='Z.' surname='Shelby' fullname='Z. Shelby'><organization /></author>
+<author initials='K.' surname='Hartke' fullname='K. Hartke'><organization /></author>
+<author initials='C.' surname='Bormann' fullname='C. Bormann'><organization /></author>
+<date year='2014' month='June' />
+<abstract><t>The Constrained Application Protocol (CoAP) is a specialized web transfer protocol for use with constrained nodes and constrained (e.g., low-power, lossy) networks.  The nodes often have 8-bit microcontrollers with small amounts of ROM and RAM, while constrained networks such as IPv6 over Low-Power Wireless Personal Area Networks (6LoWPANs) often have high packet error rates and a typical throughput of 10s of kbit/s.  The protocol is designed for machine- to-machine (M2M) applications such as smart energy and building automation.</t><t>CoAP provides a request/response interaction model between application endpoints, supports built-in discovery of services and resources, and includes key concepts of the Web such as URIs and Internet media types.  CoAP is designed to easily interface with HTTP for integration with the Web while meeting specialized requirements such as multicast support, very low overhead, and simplicity for constrained environments.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='7252'/>
+<seriesInfo name='DOI' value='10.17487/RFC7252'/>
+</reference>
+
+
+
+<reference  anchor="RFC8613" target='https://www.rfc-editor.org/info/rfc8613'>
+<front>
+<title>Object Security for Constrained RESTful Environments (OSCORE)</title>
+<author initials='G.' surname='Selander' fullname='G. Selander'><organization /></author>
+<author initials='J.' surname='Mattsson' fullname='J. Mattsson'><organization /></author>
+<author initials='F.' surname='Palombini' fullname='F. Palombini'><organization /></author>
+<author initials='L.' surname='Seitz' fullname='L. Seitz'><organization /></author>
+<date year='2019' month='July' />
+<abstract><t>This document defines Object Security for Constrained RESTful Environments (OSCORE), a method for application-layer protection of the Constrained Application Protocol (CoAP), using CBOR Object Signing and Encryption (COSE).  OSCORE provides end-to-end protection between endpoints communicating using CoAP or CoAP-mappable HTTP. OSCORE is designed for constrained nodes and networks supporting a range of proxy operations, including translation between different transport protocols.</t><t>Although an optional functionality of CoAP, OSCORE alters CoAP options processing and IANA registration.  Therefore, this document updates RFC 7252.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='8613'/>
+<seriesInfo name='DOI' value='10.17487/RFC8613'/>
+</reference>
+
+
+
+<reference  anchor="RFC6241" target='https://www.rfc-editor.org/info/rfc6241'>
+<front>
+<title>Network Configuration Protocol (NETCONF)</title>
+<author initials='R.' surname='Enns' fullname='R. Enns' role='editor'><organization /></author>
+<author initials='M.' surname='Bjorklund' fullname='M. Bjorklund' role='editor'><organization /></author>
+<author initials='J.' surname='Schoenwaelder' fullname='J. Schoenwaelder' role='editor'><organization /></author>
+<author initials='A.' surname='Bierman' fullname='A. Bierman' role='editor'><organization /></author>
+<date year='2011' month='June' />
+<abstract><t>The Network Configuration Protocol (NETCONF) defined in this document provides mechanisms to install, manipulate, and delete the configuration of network devices.  It uses an Extensible Markup Language (XML)-based data encoding for the configuration data as well as the protocol messages.  The NETCONF protocol operations are realized as remote procedure calls (RPCs).  This document obsoletes RFC 4741.  [STANDARDS-TRACK]</t></abstract>
+</front>
+<seriesInfo name='RFC' value='6241'/>
+<seriesInfo name='DOI' value='10.17487/RFC6241'/>
+</reference>
+
+
+
+<reference  anchor="RFC8040" target='https://www.rfc-editor.org/info/rfc8040'>
+<front>
+<title>RESTCONF Protocol</title>
+<author initials='A.' surname='Bierman' fullname='A. Bierman'><organization /></author>
+<author initials='M.' surname='Bjorklund' fullname='M. Bjorklund'><organization /></author>
+<author initials='K.' surname='Watsen' fullname='K. Watsen'><organization /></author>
+<date year='2017' month='January' />
+<abstract><t>This document describes an HTTP-based protocol that provides a programmatic interface for accessing data defined in YANG, using the datastore concepts defined in the Network Configuration Protocol (NETCONF).</t></abstract>
+</front>
+<seriesInfo name='RFC' value='8040'/>
+<seriesInfo name='DOI' value='10.17487/RFC8040'/>
+</reference>
+
+
+
+<reference  anchor="RFC8259" target='https://www.rfc-editor.org/info/rfc8259'>
+<front>
+<title>The JavaScript Object Notation (JSON) Data Interchange Format</title>
+<author initials='T.' surname='Bray' fullname='T. Bray' role='editor'><organization /></author>
+<date year='2017' month='December' />
+<abstract><t>JavaScript Object Notation (JSON) is a lightweight, text-based, language-independent data interchange format.  It was derived from the ECMAScript Programming Language Standard.  JSON defines a small set of formatting rules for the portable representation of structured data.</t><t>This document removes inconsistencies with other specifications of JSON, repairs specification errors, and offers experience-based interoperability guidance.</t></abstract>
+</front>
+<seriesInfo name='STD' value='90'/>
+<seriesInfo name='RFC' value='8259'/>
+<seriesInfo name='DOI' value='10.17487/RFC8259'/>
+</reference>
+
+
+
+<reference  anchor="RFC8949" target='https://www.rfc-editor.org/info/rfc8949'>
+<front>
+<title>Concise Binary Object Representation (CBOR)</title>
+<author initials='C.' surname='Bormann' fullname='C. Bormann'><organization /></author>
+<author initials='P.' surname='Hoffman' fullname='P. Hoffman'><organization /></author>
+<date year='2020' month='December' />
+<abstract><t>The Concise Binary Object Representation (CBOR) is a data format whose design goals include the possibility of extremely small code size, fairly small message size, and extensibility without the need for version negotiation. These design goals make it different from earlier binary serializations such as ASN.1 and MessagePack.</t><t>This document obsoletes RFC 7049, providing editorial improvements, new details, and errata fixes while keeping full compatibility with the interchange format of RFC 7049.  It does not create a new version of the format.</t></abstract>
+</front>
+<seriesInfo name='STD' value='94'/>
+<seriesInfo name='RFC' value='8949'/>
+<seriesInfo name='DOI' value='10.17487/RFC8949'/>
+</reference>
+
+
+
+<reference  anchor="rfc2516" target='https://www.rfc-editor.org/info/rfc2516'>
+<front>
+<title>A Method for Transmitting PPP Over Ethernet (PPPoE)</title>
+<author initials='L.' surname='Mamakos' fullname='L. Mamakos'><organization /></author>
+<author initials='K.' surname='Lidl' fullname='K. Lidl'><organization /></author>
+<author initials='J.' surname='Evarts' fullname='J. Evarts'><organization /></author>
+<author initials='D.' surname='Carrel' fullname='D. Carrel'><organization /></author>
+<author initials='D.' surname='Simone' fullname='D. Simone'><organization /></author>
+<author initials='R.' surname='Wheeler' fullname='R. Wheeler'><organization /></author>
+<date year='1999' month='February' />
+<abstract><t>This document describes how to build PPP sessions and encapsulate PPP packets over Ethernet. This memo provides information for the Internet community.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='2516'/>
+<seriesInfo name='DOI' value='10.17487/RFC2516'/>
+</reference>
+
+
+
+<reference  anchor="rfc8141" target='https://www.rfc-editor.org/info/rfc8141'>
+<front>
+<title>Uniform Resource Names (URNs)</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'><organization /></author>
+<author initials='J.' surname='Klensin' fullname='J. Klensin'><organization /></author>
+<date year='2017' month='April' />
+<abstract><t>A Uniform Resource Name (URN) is a Uniform Resource Identifier (URI) that is assigned under the &quot;urn&quot; URI scheme and a particular URN namespace, with the intent that the URN will be a persistent, location-independent resource identifier.  With regard to URN syntax, this document defines the canonical syntax for URNs (in a way that is consistent with URI syntax), specifies methods for determining URN-equivalence, and discusses URI conformance.  With regard to URN namespaces, this document specifies a method for defining a URN namespace and associating it with a namespace identifier, and it describes procedures for registering namespace identifiers with the Internet Assigned Numbers Authority (IANA).  This document obsoletes both RFCs 2141 and 3406.</t></abstract>
+</front>
+<seriesInfo name='RFC' value='8141'/>
+<seriesInfo name='DOI' value='10.17487/RFC8141'/>
+</reference>
+
+
+
 
     </references>
 
@@ -505,110 +592,111 @@ is either located in the core network or at the application.</t>
   </back>
 
 <!-- ##markdown-source:
-H4sIAPJyiWAAA8Vb+3PbOJL+nX8FalI1I29E+ZHH7PiSqVXsOMlV/CjZ2dxW
-bd0WREISKhTBJSg5mjj3t+/XDYAEZcfj3M7VsSaJCJJAv/vrBiZN08Q2ssz/
-IQtTqkPR1CuV6KrmX7Y52Nv7Ze8gyU1WyiUe57WcNWmlCrNOi+palqmss4Vu
-VNasapXu7SeZbA6FLmcmqfRhIoTdLGs1s4fip42yP9GAqZutkabWWdPdZ2ZZ
-yXigMVm4SRrdFCDkh/cXH8dn4rKRjc7EkSkb9bkRb5XMVY3bZVUra7UpxeDy
-6O3RjhhHZP6QyOm0VutD4SaJnyXX80PBnImPpv6ky7l4U5tVlchayUPxDuvU
-pWoSuWoWpj5MUvAKVsYjcUFCAbFOUONCfYZYQUwYNzVmHmefCm0cz0qBxf39
-Jz+PhVyrcqVErqw4WshlZcWrQpaZJWHoZnMonjx7tr8njsCTKdNLtdbzUuE2
-V59ZXquyqfHWSY2PFEbUUuriUMi/SKw3woKezIuRuFqspqpuWkIvpM1kEQ0z
-neJI28yIy41t1NJG9IpXK13kJJbjaPTpMzBcKMfBeb3E36l4dbEP82lZEHvP
-D549FadmNQcteH5pqoWWYlw2ujKFtvdxUjWOvr9kRNcIFhJJ/lSXcrqqTSf8
-UsaD/x+SLzvZl6ZewkrXityhnmV//vng6aEgs0zIT/oPD57tP4dSLi7c7c8H
-zw4OYc/jcP/Ls71D8bfx2Rs/1/7T/UPxYXLmbyFwGOnF+rm/f/IzZjtfq3qt
-1bUfe77/BGOXR+eT127kl719TPLeTCTu36XHI62amXdvmy2ydCPLeZrLRqZL
-kyuwd0r/3H45M7JKLbskfrNLpovM8Zp6JugTr8xUlw25lVvEgMq0qqrDBFea
-pkJOoSrEgSS5WmgrEINWS1U20NVMl9BXs1DegWl+EQeikZthqfO8UEnyiPy2
-NvkqaygkfHkU336l+ZV49/rqxE/38Y1fI+c1SpVB+7LeCFOpWtI3WNwIBQMr
-FEtbEPGJVQWWx1fvzXV6Ya7h/B91rhBflBRnqrn2AWXAy+yIWubaCJC8KE1h
-5lrZUfLli1fb16+CYhgYtrAmXoB0KMwMRBmrtr5jHjJTK3zFnLkXlQiLzimK
-Ce3E9rthM/Fh05EDgwU57YIbLMcix1JrTa4DAjFPrZaKg3eIvZms5FQX8CMx
-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
-lvQnHGq9DoVFzfvG8QZ1yx49GiXvYDSlZM9mW2cndEcUaOPc7/f0lAw2bkvC
-ny3g5j75JlWU7CBkVqS0qFPQ7UJRzzLo0+nE6SxyhlDmhbZKK+a2coC5+700
-N7vbK2GdR/25YaTt0jQJYodr9eeh2UExS7bGmYz7ywyFXS2XsoZW256cq4nI
-v1NqEnP3hPcQlO3vALliij7jBg1M2YVFb4e+reT363oNz1As8UkCYUoqV/K2
-+nH2oKgYtkJpvuMeZUcjn/YIs1BEa27VTbzBRaGb+3zDSJS84zZVXRMp4sAJ
-2nXVYm7bUomT2x1F0p3XgOi8kV1tNECe+/3P2jf9R8AMD/yI3vw3VhKEDMjy
-HvCZezH67oGXBwqPH4rGHwcE/oL3XiY/HoubFy9vo5P4eoEXj348oRdfvkwE
-/vrVD7z89f4v6UVegr75X1LawzGdHwUgc9l5HPuicg0Py52p9mgVxxy7KbNF
-bUJTo20ZtNYa7YnesQPZWroHEy6PM8bg5gXvPyffvdlZuv3MDqyQz7Qrd45G
-UY88mBlysYy6rQiYFiCKN3Ra9EOwhDnoKBvymRJq3Jy9vjo6PzsZisnrS/7F
-XkmnB+hmFJ7T7FZcXr6NXuSht1dXF5fD3kfuAdWbA7tDa4A6TecyKIrTmUTa
-USltZWp/gKSj1QVz5l73m0qII/91+l6s+OxrSzRG//Py/MwP91jAo6NX5xP/
-qGUo2Wo6dxejIBUeDHx5Cj/3TvvY71E+Fn9qX/JRb+eFf/vXGzp3hSc3bovU
-j94x6arKCbHenLJOaipUb6vCdIRHBIcwAutQmKKjS3CjFGA4fjn8DgU31dvB
-38WP4jg4sgiujMGT2EfjT3vuNzmN3U59w+1YIJ5LMZic7vjMlC0Yq8FiF1BX
-QRmV9Q5twUTybi+CHYI9i4+HumNNhNaE23q04aiK00WLJVyunZzyvjqZFehl
-aBLD8u4cQVsyUYPX72rG5044y9UK9+owSf7kj4+0mTLl4sWf8vCYeLkqwzq5
-UW4zzSM3gSqDIPdIvJZ0StEVOtE5DTozRIi8JLJ5r4bi0uS07VDTqc3ulB7n
-WoKNEZniWhWF25l8T4DyvaGmlcxzf4ojLsXAtD89uLmracqYYHI6IgxtVQYA
-1GzE6fhvLgAq2iSTdE6N9kk1xxcHBXtnZroDr05WYJoc32+PBZlG2unJ1AvM
-Wc/aFGvfmffVKZVbLWeXb88/vD8OzEHGXZu46926CENqwjgH8NM2PoolUTr3
-Qgpn2DJCyvEG69w02m+1h4NoEAPhfy69+AzIAzYtW/MMO82+De7b0VG1Mw3n
-iDiWaneucNZFXg/bv+doWWQFFByRxcYZGU2hcicL68hz/2cCSkKzKnKY2ifl
-/E7CsgZUZhXVQiKJgnw++rTDB675vPQUxQb9/hdXLhSPFjIAAA==
+H4sIAIHDimAAA81be3PcOHL/n58CWVdlpVvNyO9dK+fNyZJlK2XJKsku5+ru
+coUhMTMokwSPICXPWs5nz6+7ARIzkl+1l0pYa3sIAo1+v4CdTCaZ73Rd/F2X
+rjZ7qmt7k9mm5V++u3/37pO797PC5bWu8Llo9bybNKZ0l5OyudL1RLf50nYm
+7/rWTDA1192esvXcZY3dy5Tyq6o1c7+nflwZ/yMNuLbbGOlam3fje+6qRqcD
+ncvjS9bZrgQiP7w6e7d/qi463dlcHbi6Mx869dLowrR4rZrWeG9drbYuDl4e
+bKv9BM0fMj2bteZyTwmQ9Ft2tYjD71z73tYL9aJ1fZPp1ug9dYx92tp0me67
+pWv3sgloBSn7U3VGTAGywqj90nwAW4FMHHctIO/n70vrhGZjQOK9ew9+3lf6
+0tS9UYXx6mCpq8arZ6Wuc0/MsN1qTz149OjeXXUAmlw9uTCXdlEbvBbmA/Or
+r7sWs45aLDIYMZW25Z7Sf9LYb4oNA5pnU/Vm2c9M2w2Inmmf6zIZZjzVgfW5
+Uxcr35nKJ/iqZ70tC2LLYTL68BEILo1Q8Lqt8PdEPTu7B/UZSFB3H99/9FCd
+uH4BXPD9wjVLq9V+3dnGldZ/iZKmE/z+lBNeU2hIwvkTW+tZ37qR+bVOB/8v
+OF+PvK9dW0FLLw2ZQzvPf/n5/sM9RWqZkZ1sfATLoGZnl4/D+4OfH++p15em
+vbTmCmPHk8OpNd08mJ/Pl/lkpevFpNCdnlSuMNj+hP65OTl3upl4Nhn8ZpOZ
+LHPBZXLg9s/CksDsia07UnvZxAGHSdM0Mt2dnZ2lG+QO5g+x2D118PrkOMMz
+mUyUnoHdsOUse7O0XsGP9JWpO/B7bmvwvFuaYG0EVKXOZCoQKlsUpcmyO2R7
+rSv6vCOz/ngnff2U0QZGHT9/cxSt90XYpOBNapNDhLpdKdeYVtMi7O6UgZaU
+hhmuiMLMmxL7Y9UrdzU5c1ew4He2MHASRqtT010Fr7DF22yrVhfWKeC8rF3p
+Ftb4afbx4yRK7NMnRa4INHsoBW9Bw8rNgZbzZmMlU/HNTu3jx6BO2GWAs1JW
++EoiwebMI9lvjUGRkAW5t+lNAXVQ5Aio9nC7PampAnsqpgYQtUhtpj345V3Z
+E1t3QGehlu6K18ZRlYP6GRlaU7qVKaYk0TcJ7bzqrHVzWxqfZc9MrntiD/GD
+Nkn5pJYw2xA21MoAWwsEa7wwqq2G4vodZaaL6Q68RAafXTHClf5gq75S8xZ+
+Qnn7m9nBDmDAYtn0HWO+61qAaw3rlS7hA3YEgQrhEBRkjeBYkPboQjcd/WBS
+G5PbOQQnumY7whSbGp0vU/Fg+tXSYsx2JCrdNKVlhuw3jakL+0EdTtUPvOeZ
+JkSBvv+BIKXyhsPsRDyDEwGXu6XuSM9YxNm46WRAbpAw0wNiLkm7gVOgS4gF
+RIE1giAEWYcR2KqmBOc+fvwX4PPk7r17rOUMyY8SiwAJ1it3rknpajEgL+L/
+Fl3Psr8QtL9t3Qm0b0dGm4AN/HllOGmI5pHrRs8syS7oJsa0IsdnMqaKaQfL
+IARm2rgcuJIiFiYZ8KBrKvbBMJSdE1EVASYj8IbtK0F699Ck+Gwd7B7CU/Tl
+aOJBut7Qfrpc/QZqoMFwoDBJZD/vTScmkcPvdEQqS5z2AeVl4UU8tsuYDJqw
+gNpjRkoNbR62pV3pp6yLi2bGsxL2XhQ6LmQogobYcxeWZ+AFAjZwaNXWOQaO
+QRk5HARAX9muYzgLg/mturLd8iY+BvzsTbSalNPT7FkUF30S8OP2snDnxjL2
+La2ZUWbCH11rkWMgqxEKGAIEdqXbgo2uxt+guY4gDH+u2DuLmwxpHqSV2pwu
+vRsVXVPUX5Atse3tnhsNUNWsXKmto93z7VQNmbUNssvIkZueSHTpla3f70T/
+ALauGov0DCAHzwZkLfMHqbaXVcHeo3UB6+PBOSc0Bm4QWOdUqdsFSwFemeIT
+QYUuQ/+gJITG5JVeUf56+HYnG4x6npKcuK9NOxq2E80D08gn0gJvK4u9dyDC
+S5uLVgEMYhU0EitYDxG4RZSVg4Jij9Y1rSX7XUeAFu9A9guIlixndD5Ca3Tx
+BtZTv1embaEuCP8ymLWmtFFErflHD79fqNmKFzBhOW8TjLbWlJeInNqgm2Xp
+rjiRKMhNw3rZOwTPvqb3rr0F9yklSncE5eOaKrGcot9grJTUkQsj8Xdk36O7
+Eb6Jw2+T6IP0JrCWWY9PnA/0PmqEDfvwzEbblqA1BkFmuqbtEAHRHzcZWDus
+h2cq/OAZfAgiJOcMDo+tDnYQ/QdAjKKuHXyQK8iPwNn2bZAdCNUceP2G5V1p
+P6ZziZvivI3gvz08+zc16ztBEZiRzbAMFqY2SBSyVBbsENaEkcQ5hTDn+3wZ
+4j4BWdRQQ/A2hm5KAlCUupIkPai8OGzQKeZbsvmIKkjSiSjPQY+4wwyHG1hR
+ToFMsBPNA0vmkBnMkdwspxBzzkjiMEP1o1MGh8eUluBl7KVmLN4QpWbwC8bU
+CZRGtwR7R63B9v1sIvCDi1Ee3okaBPn7ITmqEK8Wm8iixNK1/U1H2bH/GZhE
+QTWwI1gZWFUUVlKs0U8yRsF2yiu98qpxEBgS9IwsbMhcXKLvLGjONh1Fsaii
+onChyGEy8V3WgEPj3jODXNK6npT/CLOiclN2MxnqImggwCA58zfCGcDSDEz/
+9/Ojg5/vP7pPgaIustcXB6/Pn4fxXx7fe/Dpk6RQrQkVAYUduyCX8vHjkV3w
+dgev988AQXzWuoqyxM0y3T2D5R6fRQMI2jQoG4lIx6CwYbtX5Bm0kAO6Jp2b
+4J81IwklQ+IHoTar0mlk95pSVT8olkRkdudBL7PUfbLSfyPoQIPHFw5JQD6L
+WAdHC7ENcdTUebtqiNjGtd1nYCOEgfX/jSdDzRqeLUF4WyXP1umLd2sDN58t
+ZOnbCZifJuH56cvr1p5xEQDtqwsau1aiSPTjm59xEQA16iCM2Ro+73sBhUUM
+6OU6lt8BaI206YARa9/3YhQWZenYSBoL3i1a3SzJDaiZ6+uCKvwvkDaZ/n36
+T/jzvyM113ffL7Ww6P+51EbSJAzsqjnS7+iDbxNcSto/T2qnAnyq2F/yj29+
+xkXU5wtjw7Pxuja8CWh4qLc9AOdcJmAU1slQMnADo7AIgK5EIX8/Rk7EP42S
+HDBKXz+PUfhB7UtRyM9i9M2A3g8YSZ0TMZK378DoBrkbr9/Mo+TZwiO9QDxr
+X8Si8COWk3FIQtHHPXVnLewrPtt4+uPhkFatxWwvFdqidDMYjefW/I/S+byt
+tTpkvmtdVc4mpaHGCZJ05bj8587RKsRPZFKluTRl6BwsHLaMkXUEh8FhXy4r
+kWhRX6Gj/EOygjHlDNmgZMlU2CjuVmcxrw91V+xOmrE7KWHf20XNPdSY7WJ3
+AmWJuzxIiSIX1JzwEKVcnxEcypKSjIArfcoOQ0Wd9KViOXZIGEojPdtfl8QO
+MuWq0i2Ky1iMhxTuBYQzofOke5TD2YpqY69CNUTZM6XrIf2jlTOHPMZQ1RBr
+pDgidRI3GyhlIiSHpMdzzyApA2N2E1UyOPOvpDLJxGElN128+vrKOPH37wkT
+pUrya+uGicm6b3wGi41h7quhcZhIK//49OnTa3Wu/lUdqmt6+dwqmXiAiUcy
+kVbjn1+HQXr53GqZGLahl9+H9frAmscZtTS6nItRn1nTY5df/AuXk3xO0rlR
+JbluaBz12lGpuCqx9Ut8clylUtpfhWbHWPkM3aPamMIEzTcfYhk9tBqkYWDZ
+7DfMXPullBYurMbeecdlGxstqrDRE962e+9D0yH7y5/3T1/8bYvKtyeP7m5z
+L1CX1lfchPiGA7d0r1oRtMS/Ec+GrcduCRVFYICcPwnJvbTzPPwuedbRYZIn
+YxKk9ibJ7HCLQqGCO33+5uD16ZHUmY/vP2TPc/78Ihn95e7DuzRKToaKUvky
+oYM6FKURAu3v1cXFy3G5DL188+bsYn21fKAkdstvK6kjLVX3VGLzORE3hKkm
+CxnfQI1Ug8wfu14MQ87/efJK9XxsHpCi8xv1HxevTwMl9x89AbdlyoClRAF1
+8Oz1eZj25OE4LeK84SSTR3rst3iy4Jd+eirPT+oPo6MU3dz+Y5j96zU5RHy5
+xsh1TKd/vQVo3xQUHa9PWJgtJcUDsQNJbsQ7QTh6SqiVAYgRL8WNFQTedPJN
+L6BucWa3+qivOJDzk9RxmM84jjehh68CpWrr/IQPCyCrfMntZ6j7EtIryRRZ
+JSAwaE8hDoWMgq2JYnHGZi0tNkTyFYGoF9ITGHuQQ8NU4vH5CXddGJMT6Qem
+acDgA8YUjc6EPwjo9GSNGzKtwbvZy7I/hAMyExOHCSdLzIKd2CKq+jruUzig
+Rj3P0P5SyGo6bD1Vz+lwMCRWiT+lphQwgzcB2kQypwXnJz5mbHSIPHbdOSEo
++ehgQFNdmbJ8X7urmrv56pWjIlkXRXCyaeoHosO5zuqWXo6cJJ+fIOG+D++U
+9y31y0/2/ywHuoZajJp6pvO5zS07J+mBr50JjifwwitqOsMnyEHrNPI0kc4a
+TwPDRHsuXUk6QuiFbJjSu4Gyi5ev3746jMSBx0N/K7aLQvQh+zo5eX56+PwQ
+CJwMzlVVhOkiMCn2U3PdtnZM+GqzcJ0NzavY6QQb6KjCeZkXeoh0WYL0MKgh
+XCNxKra6bOdNOU9PTpAJC9XsTq30suej8w0Hdjd6lIlI04MF0C9qlWVHdCxW
+rnZIjIz5g81z5cI0Nqezx3j2NDQQN8uIbPPcaYfOdiA+buoHA0Zk9kvSQeZG
+uNAiHVL2/XQ7gXmVicEyQMCjzdh0xWVvUVo5/kUPNRjoBX/kP3p21V83PBf5
+rmHK8N8uZvxVnCd3N/6LId6aTAXPGbYaEEgnXyvx+b9ugLjeH7X5OosQ4p/d
+iMGAxSUvepo+NH5hWipXUooFC6biFoTXE8UNQg7NZfr1/MU7vzb99MU7desD
+YtajQCqrGA/eBKURxQj3ZdZu2HFkiMeaOzcOL+GLmuEaC8qtduJay/lBPBat
+jK7jwVdZZvGwPO1FS4Hk+jY3E/gfeI7YZEaSMndUFI7zGg3XSuq6Szc6stxQ
+VYj0i0xmisAQTswp+uyopV0sN05jD9lZerWFH9tD8MjSaxlcuYXLhkn4EcF6
+7ikjjQo3UShpDjgE/mUvkDBcwVtwfzryIVh7Q3eUgjdcOzHWqkTEKemYLEUX
+1NR8nhvwng53bYpAiKlm5IR6W9IVsNQlewlu0YHN4+HnLD34pauSSgIPrS4u
++cAhxpLSxRJcgl5yUjj0BMERubsTjh1JZWmOUB8hae9dbvmgg2P/zsCRzcJ5
+8NiiYZIQ1HJjYjzlgyhWY8+EuNn5SHw4I7YSxUtbWbnokK1paLjdVIXbXlzw
+h2MpOqv3cuqyxlCu8nlnuZeXRerkpglRtElK4ChfMxujCzVI8tbOpAbRJaUz
+BGFESXbPEqbHhkRyJY6bDjcODuWwku4y/aPfOLDLuJWiFZCgsy54+PuP7pGH
+zwlhCe7CYp5I05Qty156RMGO2T445DF6Y+UzHG8n0THeJKOboJes+sWq1lXU
++nD+JOlgmDs3dN2F0iW4g4rzqZWkVOEgdMw32SW8rS1fCDk34kSyUxrdent+
+uh2I/OWeFFqm9vH0Oiir8CreXTMfdN59uWGT+Gc47nd2cmTZs6+Prz9DG5Lj
+xvFZ+Pmcsj9uNK6PpwvH39sDhJd0yyLuuDvseS4d+BSTLZW2MwcQLGDSqmsO
+V0hZbo6Pz9YGCp+j9AscuNGGxYMgLBsmdVfyRP1bD2IY2AhhGJnItTHpAw4G
+JDVN2mtN7gKx46AEe7PZGm5djHa4Q6fafP4MvcnkZlO4ejIcagdnG2w6Finx
+NDw1avh7I9cBsnBhg2ZztAr+JvRV1wyCLkwCcN/FwEGdzTLcapSeRLgcU4rr
+pkvi/DL6Cr7DdxHLgQOMgBXhW5ZFr4ranoi9NOt1Wjie78tCekuxDGGz0+3M
+wj1QqeDAoiEbJ24Sr+Wy1hzhgW4mrN182/BsQ0RBbqrpGlYmcoJj1Ihw1K9i
+vaBIxnQayzfX+G7KWi1E18xa7enWJpICandnfKkG8uk442HGeZL64ArG+y4p
+v7mLH/pX4Rafz0IpROKI1JgKrIYw40XW8aibBUIX0QvpVx/vn+6vC2BTUZea
+IldsEhCutIbW7ucUqiF5KX3C5SP53xugQCyh0r4P4tMoJLeIgLJZakQHRErX
+YtPtPbmtPYM8qPL4H6WTCu1YMgAA
 
 -->
 
