@@ -112,7 +112,17 @@ The nature of a ruleID allows to determine if it is a compression or
 fragmentation rule.
 
 
+# SCHC Applicability
+
+
+[//]: # (may move outside if too big)
+[//]: # (Explain LPWAN in general )
+[//]: # (SCHC is generic and applies to many places)
+[//]: # (Discussion on Goose and DLMS)
+
 # SCHC Endpoints
+
+[//]: # (to Eric's point, how do we ensure that both ends have the same rule set)
 
 Section 3 of {{rfc8724}} depicts a typical network architecture for
 an LPWAN network, simplified from that shown in {{rfc8376}} and reproduced in
@@ -220,7 +230,7 @@ instances to deal with the encrypted portion of the application PDU.
 
 This document defines a generic architecture for SCHC that can be used at any of these levels.
 The goal of the architectural document is to orchestrate the different protocols and data model
-defined by the LPWAN woeking group to design an operational and interoperable
+defined by the LPWAN working group to design an operational and interoperable
 framework for allowing IP application over contrained networks.
 
 
@@ -237,7 +247,6 @@ A SCHC instance, summarized in the {{Fig-Glob-Arch1}}, implies C/D and/or F/R pr
        +-------+                                +-------+
    <===| R & D |<===                        <===| C & F |<===
    ===>| C & F |===>                        ===>| R & D |===>
-       +-------+                                +-------+
        +-------+
 ~~~~
 {: #Fig-Glob-Arch1 title='Summarized SCHC elements'}
@@ -275,8 +284,9 @@ The RM is a application using the Internet to exchange information, therefore:
 Management messages can also be carried in the negotiation protocol as proposed in {{-SCHCoPPP}}.
 The RM traffic may be itself compressed by SCHC, especially if CORECONF is used, {{-SCHC-CoAP}} can be used.
 
+# Endpoints Provisionning
 
-
+[//]: # (how to provision the GW with the security and the rule set for the new device?)
 
 # Security Considerations
 
@@ -286,6 +296,9 @@ generate a buffer overflow and either modify the device or crash it. It is
 thus critical to ensure that the rules are distributed in a fashion that is
 protected against tempering, e.g., encrypted and signed.
 
+
+[//]: # (Ben Kaduk comment on SCHC CoAP; compression may leak information ???)
+[//]: # (Add text to say that this is not effective because not dictionary based)
 
 # IANA Consideration
 
