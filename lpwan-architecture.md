@@ -104,7 +104,7 @@ case of an LPWAN network.
 If a SCHC-compressed packet is too large to be sent in a single Link-Layer PDU,
 the SCHC fragmentation can be applied on the compressed packet.
 The process of SCHC fragmentation is similar to that of compression;
-the fragmentation rules that are programmed for this device are checked to find
+the fragmentation rules that are programmed for this Device are checked to find
 the most appropriate one, regarding the SCHC packet size, the link error rate,
 and the reliability level required by the application.
 
@@ -142,11 +142,10 @@ an LPWAN network, simplified from that shown in {{rfc8376}} and reproduced in
 Typically, an LPWAN network topology is star-oriented, which means that all
 packets between the same source-destination pair follow the same path from/to a
 central point. In that model, highly constrained Devices (Dev) exchange
-information with LPWAN Application Servers (Apps) through a central Network
+information with LPWAN Application Servers (App) through a central Network
 Gateway (NGW), which can be powered and is typically a lot less constrained than
 the Devices.
-Because devices embed built-in applications, the traffic flows to be compressed
-are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the network .
+Because Devices embed built-in applications, the traffic flows to be compressed
 
 Then again, SCHC is very generic and its applicability is not limited to
 star-oriented deployments and/or to use cases where applications are very static
@@ -200,7 +199,7 @@ instances to deal with the encrypted portion of the application PDU.
 
 ~~~~
 
-         (device)            (NGW)                              (App)
+         (Device)            (NGW)                              (App)
 
          +--------+                                           +--------+
   A S    |  CoAP  |                                           |  CoAP  |
@@ -275,7 +274,7 @@ fashion. To that effect, {{-Model}} defines a rule representation using the
 The Rule Manager (RM) is in charge of handling data derived from the YANG Data
 Model and apply changes to the rules database {{Fig-RM}}.
 
-The RM is a application using the Internet to exchange information, therefore:
+The RM is an Application using the Internet to exchange information, therefore:
 
 * for the network-level SCHC, the communication does not require routing. Each of the end-points having an RM and both RMs can be viewed on the same link, therefore wellknown Link Local addresses can be used to identify the device and the core RM. L2 security MAY be deemed as sufficient, if it provides the necessary level of protection.
 
@@ -292,7 +291,7 @@ The RM traffic may be itself compressed by SCHC, especially if CORECONF is used,
 
 SCHC is sensitive to the rules that could be abused to form arbitrary long
 messages or as a form of attack against the C/D and/or F/R functions, say to
-generate a buffer overflow and either modify the device or crash it. It is
+generate a buffer overflow and either modify the Device or crash it. It is
 thus critical to ensure that the rules are distributed in a fashion that is
 protected against tempering, e.g., encrypted and signed.
 
