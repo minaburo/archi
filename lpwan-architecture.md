@@ -111,9 +111,7 @@ and the reliability level required by the application.
 The nature of a ruleID allows to determine if it is a compression or
 fragmentation rule.
 
-
 # SCHC Applicability
-
 
 [//]: # (may move outside if too big)
 [//]: # (Explain LPWAN in general )
