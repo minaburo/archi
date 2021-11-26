@@ -98,17 +98,17 @@ identifier (RuleID) is transmitted together with the compression residue to the 
 Based on the RuleID and the residue, the decompressor can rebuild the original packet and forward it in its uncompressed form over the Internet.
 
 {{rfc8724}} also provides a Fragmentation/Reassembly (F/R) capability to cope
-with the maximum frame size of a Link, which is extremely constrained in the
+with the maximum and/or variable frame size of a Link, which is extremely constrained in the
 case of an LPWAN network.
 
 If a SCHC-compressed packet is too large to be sent in a single Link-Layer PDU,
 the SCHC fragmentation can be applied on the compressed packet.
 The process of SCHC fragmentation is similar to that of compression;
-the fragmentation rules that are programmed for this device are checked to find
+the fragmentation rules that are programmed for this Device are checked to find
 the most appropriate one, regarding the SCHC packet size, the link error rate,
 and the reliability level required by the application.
 
-The nature of a ruleID allows to determine if it is a compression or
+The ruleID allows to determine if it is a compression or
 fragmentation rule.
 
 # SCHC Applicability
@@ -140,15 +140,15 @@ an LPWAN network, simplified from that shown in {{rfc8376}} and reproduced in
 Typically, an LPWAN network topology is star-oriented, which means that all
 packets between the same source-destination pair follow the same path from/to a
 central point. In that model, highly constrained Devices (Dev) exchange
-information with LPWAN Application Servers (Apps) through a central Network
+information with LPWAN Application Servers (App) through a central Network
 Gateway (NGW), which can be powered and is typically a lot less constrained than
 the Devices.
-Because devices embed built-in applications, the traffic flows to be compressed
-are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the network .
+Because Devices embed built-in applications, the traffic flows to be compressed
+are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the system before use.
 
-Then again, SCHC is very generic and its applicability is not limited to
+Nevertheless, SCHC is very generic and its applicability is not limited to
 star-oriented deployments and/or to use cases where applications are very static
-and the state can provisionned in advance.
+and the state provisionned in advance.
 {{-SCHCoPPP}} describes an alternate deployment where
 the C/D and/or F/R operations are performed between peers of equal capabilities
 over a PPP {{?rfc2516}} connection. SCHC over PPP  illustrates that with SCHC,
@@ -170,11 +170,13 @@ Name (URN) {{?rfc8141}}, ensuring that the peers use the exact same set of rules
 
 # SCHC Instances
 
-The rule database contains a set of rules that are specific per device.
+The rule database contains at least one set of rules that are specific per Device.
 There is thus a SCHC instance per pair of endpoints.
-{{rfc8724}} states that a SCHC instance obtains the rules to process
+{{rfc8724}} states that a SCHC instance needs the rules to process
 C/D and F/R before the session starts, and that rules cannot be modified during
 the session.
+
+[//]: # (OGZ: Should we put the next paragraph in intro instead?)
 
 {{rfc8724}} was defined to compress [IPv6](#rfc8200) and UDP;
 but SCHC really is a generic compression and fragmentation technology.
@@ -190,15 +192,18 @@ additional behaviours.
 For instance, {{-SCHC-CoAP}} extends the compression to CoAP {{?RFC7252}} and
 OSCORE {{?RFC8613}}.
 
-As represented figure {{Fig-SCHCCOAP2}}, the fragmentation and the compression
+As represented figure {{Fig-SCHCCOAP2}}, the compression
 of the IP and UDP headers may be operated by a network SCHC instance whereas the
-end-to-end compression of the application payload happens between the device and
+end-to-end compression of the application payload happens between the Device and
 the application. The compression of the application payload may be split in two
-instances to deal with the encrypted portion of the application PDU.
+instances to deal with the encrypted portion of the application PDU. Fragmentation
+applies before LPWAN transportation layer.
+
+[//]: # (OGZ: The line "SCHC" between LPWAN and IPv6 is not easy to undertand as not described the same way for upper layers. Maybe rename it "Network SCHC" ?)
 
 ~~~~
 
-         (device)            (NGW)                              (App)
+         (Device)            (NGW)                              (App)
 
          +--------+                                           +--------+
   A S    |  CoAP  |                                           |  CoAP  |
@@ -250,8 +255,9 @@ A SCHC instance, summarized in the {{Fig-Glob-Arch1}}, implies C/D and/or F/R pr
 {: #Fig-Glob-Arch1 title='Summarized SCHC elements'}
 
 
-To be able to provision end-points from different vendors, a common rule representation is needed that expresses the SCHC rules in an interoperable
-fashion. To that effect, {{-Model}} defines a rule representation using the
+A common rule representation that expresses the SCHC rules in an interoperable
+fashion is needed yo be able to provision end-points from different vendors
+To that effect, {{-Model}} defines a rule representation using the
 [YANG](#rfc7950) formalism.
 
 {{I-D.ietf-lpwan-schc-yang-data-model}} defines an YANG data model to represent the rules. This enables the use of several protocols for rule management, such as NETCONF{{?RFC6241}}, RESTCONF{{?RFC8040}}, and CORECONF{{-COMI}}. NETCONF uses SSH, RESTCONF uses HTTPS, and CORECONF uses CoAP(s) as their respective transport layer protocols. The data is represented in XML under NETCONF, in JSON{{?RFC8259}} under RESTCONF and in CBOR{{?RFC8949}} under CORECONF.
@@ -273,14 +279,14 @@ fashion. To that effect, {{-Model}} defines a rule representation using the
 The Rule Manager (RM) is in charge of handling data derived from the YANG Data
 Model and apply changes to the rules database {{Fig-RM}}.
 
-The RM is a application using the Internet to exchange information, therefore:
+The RM is an Application using the Internet to exchange information, therefore:
 
-* for the network-level SCHC, the communication does not require routing. Each of the end-points having an RM and both RMs can be viewed on the same link, therefore wellknown Link Local addresses can be used to identify the device and the core RM. L2 security MAY be deemed as sufficient, if it provides the necessary level of protection.
+* for the network-level SCHC, the communication does not require routing. Each of the end-points having an RM and both RMs can be viewed on the same link, therefore wellknown Link Local addresses can be used to identify the Device and the core RM. L2 security MAY be deemed as sufficient, if it provides the necessary level of protection.
 
 * for application-level SCHC, routing is involved and global IP addresses SHOULD be used. End-to-end encryption is RECOMMENDED.
 
 Management messages can also be carried in the negotiation protocol as proposed in {{-SCHCoPPP}}.
-The RM traffic may be itself compressed by SCHC, especially if CORECONF is used, {{-SCHC-CoAP}} can be used.
+The RM traffic may be itself compressed by SCHC: if CORECONF protocol is used, {{-SCHC-CoAP}} can be applied.
 
 # Endpoints Provisionning
 
@@ -290,7 +296,7 @@ The RM traffic may be itself compressed by SCHC, especially if CORECONF is used,
 
 SCHC is sensitive to the rules that could be abused to form arbitrary long
 messages or as a form of attack against the C/D and/or F/R functions, say to
-generate a buffer overflow and either modify the device or crash it. It is
+generate a buffer overflow and either modify the Device or crash it. It is
 thus critical to ensure that the rules are distributed in a fashion that is
 protected against tempering, e.g., encrypted and signed.
 
