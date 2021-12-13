@@ -50,7 +50,7 @@
       </address>
     </author>
 
-    <date year="2021" month="November" day="26"/>
+    <date year="2021" month="December" day="13"/>
 
     <area>Internet</area>
     <workgroup>LPWAN Working Group</workgroup>
@@ -72,7 +72,7 @@
   <middle>
 
 
-<section anchor="Introduction"><name>Introduction</name>
+<section anchor="Introduction" title="Introduction">
 
 <t>The IETF LPWAN WG defined the necessary operations to enable IPv6 over
 selected Low-Power Wide Area Networking (LPWAN) radio technologies.
@@ -100,20 +100,20 @@ appear in all capitals, as shown here.
 -->
 
 </section>
-<section anchor="lpwan-technologies-and-profiles"><name>LPWAN Technologies and Profiles</name>
+<section anchor="lpwan-technologies-and-profiles" title="LPWAN Technologies and Profiles">
 
 <t>Because LPWAN technologies <xref target="rfc8376"/> have strict yet distinct constraints,
 e.g., in terms of maximum frame size, throughput, and/or directionality, a SCHC
 instance must be profiled to adapt to the specific necessities of the technology
 to which it is applied.</t>
 
-<t>Appendix D. "SCHC Parameters" of <xref target="rfc8724"/> lists the information that an LPWAN
+<t>Appendix D. “SCHC Parameters” of <xref target="rfc8724"/> lists the information that an LPWAN
 technology-specific document must provide to profile SCHC for that technology.</t>
 
 <t>As an example, <xref target="rfc9011"/> provides the SCHC profile for LoRaWAN networks.</t>
 
 </section>
-<section anchor="the-static-context-header-compression"><name>The Static Context Header Compression</name>
+<section anchor="the-static-context-header-compression" title="The Static Context Header Compression">
 
 <t><xref target="rfc8724">SCHC</xref> specifies an extreme compression capability based on a state
 that must match on the compressor and decompressor side.
@@ -140,12 +140,12 @@ and the reliability level required by the application.</t>
 fragmentation rule.</t>
 
 </section>
-<section anchor="schc-applicability"><name>SCHC Applicability</name>
+<section anchor="schc-applicability" title="SCHC Applicability">
 
-<section anchor="lpwan-overview"><name>LPWAN Overview</name>
+<section anchor="lpwan-overview" title="LPWAN Overview">
 
 </section>
-<section anchor="compressing-serial-streams"><name>Compressing Serial Streams</name>
+<section anchor="compressing-serial-streams" title="Compressing Serial Streams">
 
 <t><xref target="rfc8724"/> was defined to compress <xref target="rfc8200">IPv6</xref> and UDP;
 but SCHC really is a generic compression and fragmentation technology.
@@ -162,13 +162,13 @@ For instance, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> extends the
 OSCORE <xref target="RFC8613"/>.</t>
 
 </section>
-<section anchor="example-goose-and-dlms"><name>Example: Goose and DLMS</name>
+<section anchor="example-goose-and-dlms" title="Example: Goose and DLMS">
 
 </section>
 </section>
-<section anchor="schc-architecture"><name>SCHC Architecture</name>
+<section anchor="schc-architecture" title="SCHC Architecture">
 
-<section anchor="schc-endpoints"><name>SCHC Endpoints</name>
+<section anchor="schc-endpoints" title="SCHC Endpoints">
 
 <!--
 [//]: # (to Eric's point, how do we ensure that both ends have the same rule set)
@@ -217,7 +217,7 @@ Name (URN) <xref target="rfc8141"/>, ensuring that the peers use the exact same 
 ]]></artwork></figure>
 
 </section>
-<section anchor="layering-with-schc-instances"><name>Layering with SCHC Instances</name>
+<section anchor="layering-with-schc-instances" title="Layering with SCHC Instances">
 
 <t>The rule database contains at least one set of rules that are specific per Device.
 There is thus a SCHC instance per pair of endpoints.
@@ -266,7 +266,7 @@ framework for allowing IP application over contrained networks.</t>
 
 </section>
 </section>
-<section anchor="schc-data-model"><name>SCHC Data Model</name>
+<section anchor="schc-data-model" title="SCHC Data Model">
 
 <t>A SCHC instance, summarized in the <xref target="Fig-Glob-Arch1"/>, implies C/D and/or F/R present in both end and that both ends are provisionned with the same set of rules.</t>
 
@@ -316,13 +316,13 @@ Model and apply changes to the rules database <xref target="Fig-RM"/>.</t>
 The RM traffic may be itself compressed by SCHC: if CORECONF protocol is used, <xref target="I-D.ietf-lpwan-coap-static-context-hc"/> can be applied.</t>
 
 </section>
-<section anchor="schc-device-lifecycle"><name>SCHC Device Lifecycle</name>
+<section anchor="schc-device-lifecycle" title="SCHC Device Lifecycle">
 <t>In the context of LPWANs, the expectation is that SCHC rules are associated with a
 physical device that is deployed in a network. This section describes the actions
 taken to enable an autimatic commissioning of the device in the network.
 SCHC</t>
 
-<section anchor="device-development"><name>Device Development</name>
+<section anchor="device-development" title="Device Development">
 
 <t>The expectation for the development cycle is that message formats are documented as a data model that is used to generate rules. Several models are possible:</t>
 
@@ -335,7 +335,7 @@ SCHC</t>
 <t>Depending on the deployment, the tools thar generate the Rules should provide knobs to optimize the Rule set, e.g., more rules vs. larger residue.</t>
 
 </section>
-<section anchor="rules-publication"><name>Rules Publication</name>
+<section anchor="rules-publication" title="Rules Publication">
 
 <t>In the device model and in the protocol model, at least one of the endpoints must obtain the rule set dynamically. The expectation is that the Rule Sets are published to a reachable repository and versionned (minor, major). Each rule set should have its own Uniform Resource Names (URN) <xref target="RFC8141"/> and a version.</t>
 
@@ -343,7 +343,7 @@ SCHC</t>
 A corrupted Rule Set may be used for multiple forms of attacks, more in <xref target="Security"/>.</t>
 
 </section>
-<section anchor="schc-device-deployment"><name>SCHC Device Deployment</name>
+<section anchor="schc-device-deployment" title="SCHC Device Deployment">
 <!--
 [//]: # (how to provision the GW with the security and the rule set for the new device?)
 -->
@@ -355,19 +355,19 @@ A corrupted Rule Set may be used for multiple forms of attacks, more in <xref ta
 <t>Upon the handshake, both ends can agree on a rule set, their role when the rules are asymmetrical, and fetch the rule set if necessary. Optionally, a node that fetwhed a rule set may inform the other end that it is reacy from transmission.</t>
 
 </section>
-<section anchor="schc-device-maintenance"><name>SCHC Device Maintenance</name>
+<section anchor="schc-device-maintenance" title="SCHC Device Maintenance">
 
 <t>URN update without device update (bug fix)
 FUOTA =&gt; new URN =&gt; reprovisionning</t>
 
 </section>
-<section anchor="schc-device-decommissionning"><name>SCHC Device Decommissionning</name>
+<section anchor="schc-device-decommissionning" title="SCHC Device Decommissionning">
 
 <t>Signal from device/vendor/network admin</t>
 
 </section>
 </section>
-<section anchor="Security"><name>Security Considerations</name>
+<section anchor="Security" title="Security Considerations">
 
 <t>SCHC is sensitive to the rules that could be abused to form arbitrary long
 messages or as a form of attack against the C/D and/or F/R functions, say to
@@ -379,12 +379,14 @@ protected against tempering, e.g., encrypted and signed.</t>
 [//]: # (Ben Kaduk comment on SCHC CoAP; compression may leak information ???)
 [//]: # (Add text to say that this is not effective because not dictionary based)
 -->
-<t># IANA Consideration</t>
+
+</section>
+<section anchor="iana-consideration" title="IANA Consideration">
 
 <t>This document has no request to IANA</t>
 
 </section>
-<section anchor="acknowledgements"><name>Acknowledgements</name>
+<section anchor="acknowledgements" title="Acknowledgements">
 
 <t>The authors would like to thank (in alphabetic order):</t>
 
@@ -791,7 +793,7 @@ protected against tempering, e.g., encrypted and signed.</t>
   </back>
 
 <!-- ##markdown-source:
-H4sIAOsGoWEAA81c6XIbSXL+309RK0V4yB0CFClpNOJcC5G6bF4mqJAnZtcb
+H4sIACz3tmEAA81c6XIbSXL+309RK0V4yB0CFClpNOJcC5G6bF4mqJAnZtcb
 he4CUMtGV7sPUhhJfhY/i5/MX2ZWVXeDlEYTuw4bMZKA6jqysvL4Mit7RqNR
 Uje6yP6qc1eYA9VUrUlsWfG3utl/8ODpg/0kc2mhV3icVXrejKxp5qO8vNHF
 SFfp0jYmbdrKjB7sJaluDpQt5i4p7UGiVL1eVWZeH6iv1qb+ihpc1Wy0NJVN
@@ -931,8 +933,8 @@ zIJdFLI6UBejQopTyZzIGy/Bzg5eH9pI3Mcivx2ABdLspIe7Zi2lNfl2gYoL
 WUCM5WPkKpJBTE46Vuma3nvjl00tQiWqjIEiNByB3UY7PUnsv+HJUDIkYz3a
 S3xIThIWdmNWJZf8BKTRVV0w+KI33LPxZtn2MyjBv+isveLQg2voC18RhWj1
 uwHCIwEGrLgavIP300/wE3G6SYZT4Zd/nTBQtkbwVBIrkgCm4535wk5qzazc
-Flf+FTbxPPfV68npZCg2m/dhS03zhrQaLUtjSOwmKSVVELdIrsBXPcn/4AFO
-gkUpt1deznRxpbb4Jc8S2MVQ8OoqLLp9IO+nzyA4BCX+B6IcqlRZQwAA
+Flf+Fbbt8Drl68npZCg3mxdiS00Th7warUtjaOwkpawKAhdJFviyJ/k/PMBL
+sCzl9soLmi6u1Ba/5VkCvBiKXl2FRbcP5AX1GSSHsMT/AKViyAlaQwAA
 
 -->
 

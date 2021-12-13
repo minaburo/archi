@@ -362,6 +362,7 @@ protected against tempering, e.g., encrypted and signed.
 [//]: # (Ben Kaduk comment on SCHC CoAP; compression may leak information ???)
 [//]: # (Add text to say that this is not effective because not dictionary based)
 -->
+
 # IANA Consideration
 
 This document has no request to IANA
