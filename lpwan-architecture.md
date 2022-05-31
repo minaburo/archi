@@ -39,12 +39,12 @@ author:
   email: ana@ackl.io
 normative:
   rfc8724: SCHC
+  rfc8824: SCHC-CoAP
 informative:
   rfc8200: IPv6
   rfc7950: YANG
   rfc8376: Overview
   I-D.ietf-lpwan-schc-yang-data-model: Model
-  I-D.ietf-lpwan-coap-static-context-hc: SCHC-CoAP
   I-D.thubert-intarea-schc-over-ppp: SCHCoPPP
   I-D.ietf-core-comi: COMI
 
