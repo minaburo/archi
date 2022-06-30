@@ -219,7 +219,7 @@ current state of their exchange, e.g., timers and previous fragments.
 
 This architecture generalizes the model to any kind of peers. In the case of
 more capable devices, a SCHC Device may maintain more than one Instance with the
-same peer, or a set of different peer.
+same peer, or a set of different peers.
 Since SCHC does not signal the Instance in its packets, the information must be
 derived from a lower layer point to point information.
 For instance, the SCHC session can be associated one-to-one with a tunnel, a TLS
