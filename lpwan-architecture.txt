@@ -238,13 +238,14 @@ Internet-Draft             LPWAN Architecture                  June 2022
    be pre provisioned in the system before use.
 
    The SCHC operation requires a shared sense of which SCHC Device is
-   uplink and which is downlink.  In a star deployment, the hub is
-   always considered uplink and the spokes are downlink.  The
-   expectation is that the hub and spoke derive knowledge of their role
-   from the network configuration and SCHC does not need to signal which
-   is hub thus uplink vs. which is spoke thus downlink.  In other words,
-   the link direction is determined from extrinsic properties, and is
-   not advertised in the protocol.
+   Uplink (Dev to App) and which is Downlink (App to Dev), see
+   [rfc8376].  In a star deployment, the hub is always considered Uplink
+   and the spokes are Downlink.  The expectation is that the hub and
+   spoke derive knowledge of their role from the network configuration
+   and SCHC does not need to signal which is hub thus Uplink vs. which
+   is spoke thus Downlink.  In other words, the link direction is
+   determined from extrinsic properties, and is not advertised in the
+   protocol.
 
    Nevertheless, SCHC is very generic and its applicability is not
    limited to star-oriented deployments and/or to use cases where
@@ -252,12 +253,16 @@ Internet-Draft             LPWAN Architecture                  June 2022
    In particular, a peer-to-peer (P2P) SCHC Instance (see Section 5.2)
    may be set up between peers of equivalent capabilities, and the link
    direction cannot be inferred, either from the network topology nor
-   from the device capability.  In that case, by convention, the device
-   that initiates the SCHC Instance is considered downlink.  This
-   convention can be reversed, e.g., by configuration, but for proper
-   SCHC operation, it is required that the method used ensures that both
-   ends are aware of their role, and then again this determination is
-   based on extrinsic properties.
+   from the device capability.
+
+   In that case, by convention, the device that initiates the donnection
+   that sustains the SCHC Instance is considered as being Downlink, IOW
+   it plays the role of the Dev in [rfc8724].
+
+   This convention can be reversed, e.g., by configuration, but for
+   proper SCHC operation, it is required that the method used ensures
+   that both ends are aware of their role, and then again this
+   determination is based on extrinsic properties.
 
 5.2.  SCHC Instances
 
@@ -269,11 +274,6 @@ Internet-Draft             LPWAN Architecture                  June 2022
    only one Instance for that Device, and all the traffic from and to
    the device is exchanged with the same Network Gateway.  All the
    traffic can thus be implicitly associated with the single Instance
-   that the device supports, and the Device does not need to manipulate
-   the concept.  For that reason, SCHC avoids to signal explicitly the
-   Instance identification in its data packets.
-
-
 
 
 
@@ -281,6 +281,10 @@ Pelov, et al.            Expires 1 January 2023                 [Page 5]
 
 Internet-Draft             LPWAN Architecture                  June 2022
 
+
+   that the device supports, and the Device does not need to manipulate
+   the concept.  For that reason, SCHC avoids to signal explicitly the
+   Instance identification in its data packets.
 
    The Network Gateway, on the other hand, maintains multiple Instances,
    one per SCHC Device.  The Instance is derived from the lower layer,
@@ -291,7 +295,7 @@ Internet-Draft             LPWAN Architecture                  June 2022
 
    This architecture generalizes the model to any kind of peers.  In the
    case of more capable devices, a SCHC Device may maintain more than
-   one Instance with the same peer, or a set of different peer.  Since
+   one Instance with the same peer, or a set of different peers.  Since
    SCHC does not signal the Instance in its packets, the information
    must be derived from a lower layer point to point information.  For
    instance, the SCHC session can be associated one-to-one with a
@@ -326,10 +330,6 @@ Internet-Draft             LPWAN Architecture                  June 2022
    and F/R before the session starts, and that rules cannot be modified
    during the session.
 
-   As represented figure Figure 3, the compression of the IP and UDP
-   headers may be operated by a network SCHC instance whereas the end-
-   to-end compression of the application payload happens between the
-   Device and the application.  The compression of the application
 
 
 
@@ -338,6 +338,10 @@ Pelov, et al.            Expires 1 January 2023                 [Page 6]
 Internet-Draft             LPWAN Architecture                  June 2022
 
 
+   As represented figure Figure 3, the compression of the IP and UDP
+   headers may be operated by a network SCHC instance whereas the end-
+   to-end compression of the application payload happens between the
+   Device and the application.  The compression of the application
    payload may be split in two instances to deal with the encrypted
    portion of the application PDU.  Fragmentation applies before LPWAN
    transportation layer.
@@ -380,10 +384,6 @@ Internet-Draft             LPWAN Architecture                  June 2022
    A SCHC instance, summarized in the Figure 4, implies C/D and/or F/R
    present in both end and that both ends are provisioned with the same
    set of rules.
-
-
-
-
 
 
 

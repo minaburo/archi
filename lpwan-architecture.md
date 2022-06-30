@@ -41,6 +41,7 @@ normative:
   rfc8724: SCHC
   rfc8824: SCHC-CoAP
 informative:
+  rfc8376: LPWANs
   rfc8200: IPv6
   rfc7950: YANG
   rfc8376: Overview
@@ -175,12 +176,12 @@ are known in advance and the location of the C/D and F/R functions
 (e.g., at the Dev and NGW), and the associated rules, can be pre provisioned
  in the system before use.
 
-The SCHC operation requires a shared sense of which SCHC Device is uplink and
-which is downlink.
-In a star deployment, the hub is always considered uplink and the spokes are
-downlink. The expectation is that the hub and spoke derive knowledge of their
+The SCHC operation requires a shared sense of which SCHC Device is Uplink
+(Dev to App) and which is Downlink (App to Dev), see {{rfc8376}}.
+In a star deployment, the hub is always considered Uplink and the spokes are
+Downlink. The expectation is that the hub and spoke derive knowledge of their
 role from the network configuration and SCHC does not need to signal which is
-hub thus uplink vs. which is spoke thus downlink. In other words, the link
+hub thus Uplink vs. which is spoke thus Downlink. In other words, the link
 direction is determined from extrinsic properties, and is not advertised in the
 protocol.
 
@@ -190,8 +191,12 @@ and the state provisioned in advance.
 In particular, a peer-to-peer (P2P) SCHC Instance (see {{Instances}}) may be set
 up between peers of equivalent capabilities, and the link direction cannot be
 inferred, either from the network topology nor from the device capability.
-In that case, by convention, the device that initiates the SCHC Instance
-is considered downlink. This convention can be reversed, e.g., by configuration,
+
+In that case, by convention, the device that initiates the donnection that
+sustains the SCHC Instance is considered as being Downlink, IOW it plays the
+role of the Dev in {{rfc8724}}.
+
+This convention can be reversed, e.g., by configuration,
 but for proper SCHC operation, it is required that the method used ensures that
 both ends are aware of their role, and then again this determination is based
 on extrinsic properties.
