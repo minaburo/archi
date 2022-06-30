@@ -142,6 +142,8 @@ OSCORE {{?RFC8613}}.
 
 # SCHC Architecture
 
+
+
 ## SCHC Endpoints
 
 <!--
@@ -169,14 +171,63 @@ information with LPWAN Application Servers (App) through a central Network
 Gateway (NGW), which can be powered and is typically a lot less constrained than
 the Devices.
 Because Devices embed built-in applications, the traffic flows to be compressed
-are known in advance and the location of the C/D and F/R functions (e.g., at the Dev and NGW), and the associated rules, can be pre provisionned in the system before use.
+are known in advance and the location of the C/D and F/R functions
+(e.g., at the Dev and NGW), and the associated rules, can be pre provisioned
+ in the system before use.
+
+The SCHC operation requires a shared sense of which SCHC Device is uplink and
+which is downlink.
+In a star deployment, the hub is always considered uplink and the spokes are
+downlink. The expectation is that the hub and spoke derive knowledge of their
+role from the network configuration and SCHC does not need to signal which is
+hub thus uplink vs. which is spoke thus downlink. In other words, the link
+direction is determined from extrinsic properties, and is not advertised in the
+protocol.
 
 Nevertheless, SCHC is very generic and its applicability is not limited to
 star-oriented deployments and/or to use cases where applications are very static
-and the state provisionned in advance.
-{{-SCHCoPPP}} describes an alternate deployment where
+and the state provisioned in advance.
+In particular, a peer-to-peer (P2P) SCHC Instance (see {{Instances}}) may be set
+up between peers of equivalent capabilities, and the link direction cannot be
+inferred, either from the network topology nor from the device capability.
+In that case, by convention, the device that initiates the SCHC Instance
+is considered downlink. This convention can be reversed, e.g., by configuration,
+but for proper SCHC operation, it is required that the method used ensures that
+both ends are aware of their role, and then again this determination is based
+on extrinsic properties.
+
+
+
+## SCHC Instances {#Instances}
+
+{{rfc8724}} defines a protocol operation between a pair of peers. A session
+called a SCHC Instance is established and SCHC maintains a state and timers
+associated to that Instance.
+
+When the SCHC Device is a highly constrained unit, there is typically only one
+Instance for that Device, and all the traffic from and to the device is
+exchanged with the same Network Gateway. All the traffic can thus be implicitly
+associated with the single Instance that the device supports, and the Device
+does not need to manipulate the concept. For that reason, SCHC avoids to signal
+explicitly the Instance identification in its data packets.
+
+The Network Gateway, on the other hand, maintains multiple Instances, one per
+SCHC Device. The Instance is derived from the lower layer, typically the source
+of an incoming SCHC packet. The Instance is used in particular to select from
+the rule database the set of rules that apply to the SCHC Device, and the
+current state of their exchange, e.g., timers and previous fragments.
+
+This architecture generalizes the model to any kind of peers. In the case of
+more capable devices, a SCHC Device may maintain more than one Instance with the
+same peer, or a set of different peer.
+Since SCHC does not signal the Instance in its packets, the information must be
+derived from a lower layer point to point information.
+For instance, the SCHC session can be associated one-to-one with a tunnel, a TLS
+session, or a TCP or a PPP connection.
+
+For instance, {{-SCHCoPPP}} describes a type of deployment where
 the C/D and/or F/R operations are performed between peers of equal capabilities
-over a PPP {{?rfc2516}} connection. SCHC over PPP  illustrates that with SCHC,
+over a PPP {{?rfc2516}} connection. SCHC over PPP illustrates that with SCHC,
 the protocols that are compressed can be discovered dynamically and the
 rules can be fetched on-demand by both parties from the same Uniform Resource
 Name (URN) {{?rfc8141}}, ensuring that the peers use the exact same set of rules.
@@ -192,11 +243,12 @@ Name (URN) {{?rfc8141}}, ensuring that the peers use the exact same set of rules
 ~~~~
 {: #Fig-PPPnetarch title='PPP-based SCHC Deployment'}
 
+In that case, the SCHC Instance is derived from the PPP connection. This
+means that there can be only one Instance per PPP connection, and that all the
+flow and only the flow of that Instance is exchanged within the PPP connection.
 
 ## Layering with SCHC Instances
 
-The rule database contains at least one set of rules that are specific per Device.
-There is thus a SCHC instance per pair of endpoints.
 {{rfc8724}} states that a SCHC instance needs the rules to process
 C/D and F/R before the session starts, and that rules cannot be modified during
 the session.
@@ -250,7 +302,7 @@ framework for allowing IP application over contrained networks.
 
 # SCHC Data Model
 
-A SCHC instance, summarized in the {{Fig-Glob-Arch1}}, implies C/D and/or F/R present in both end and that both ends are provisionned with the same set of rules.
+A SCHC instance, summarized in the {{Fig-Glob-Arch1}}, implies C/D and/or F/R present in both end and that both ends are provisioned with the same set of rules.
 
 ~~~~
        (-------)                                (-------)
@@ -342,7 +394,7 @@ Upon the handshake, both ends can agree on a rule set, their role when the rules
 ## SCHC Device Maintenance
 
 URN update without device update (bug fix)
-FUOTA => new URN => reprovisionning
+FUOTA => new URN => reprovisioning
 
 ## SCHC Device Decommissionning
 
