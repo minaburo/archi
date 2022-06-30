@@ -12,7 +12,7 @@ Expires: 1 January 2023                                    Cisco Systems
 
 
       LPWAN Static Context Header Compression (SCHC) Architecture
-                    draft-ietf-lpwan-architecture-00
+                    draft-ietf-lpwan-architecture-02
 
 Abstract
 

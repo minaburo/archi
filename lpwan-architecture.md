@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-ietf-lpwan-architecture-00
+docname: draft-ietf-lpwan-architecture-02
 cat: info
 pi:
   symrefs: 'yes'
