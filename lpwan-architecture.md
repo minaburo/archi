@@ -145,7 +145,7 @@ OSCORE {{?RFC8613}}.
 
 
 
-## SCHC Endpoints
+## SCHC Endpoints {#EndPoints}
 
 <!--
 [//]: # (to Eric's point, how do we ensure that both ends have the same rule set)
@@ -192,7 +192,7 @@ In particular, a peer-to-peer (P2P) SCHC Instance (see {{Instances}}) may be set
 up between peers of equivalent capabilities, and the link direction cannot be
 inferred, either from the network topology nor from the device capability.
 
-In that case, by convention, the device that initiates the donnection that
+In that case, by convention, the device that initiates the connection that
 sustains the SCHC Instance is considered as being Downlink, IOW it plays the
 role of the Dev in {{rfc8724}}.
 
@@ -251,6 +251,8 @@ Name (URN) {{?rfc8141}}, ensuring that the peers use the exact same set of rules
 In that case, the SCHC Instance is derived from the PPP connection. This
 means that there can be only one Instance per PPP connection, and that all the
 flow and only the flow of that Instance is exchanged within the PPP connection.
+As discussed in {{EndPoints}}, the Uplink direction is from the node that
+initiated the PPP connection to the node that accepted it.
 
 ## Layering with SCHC Instances
 
