@@ -361,8 +361,7 @@ The RM traffic may be itself compressed by SCHC: if CORECONF protocol is used, {
 # SCHC Device Lifecycle
 In the context of LPWANs, the expectation is that SCHC rules are associated with a
 physical device that is deployed in a network. This section describes the actions
-taken to enable an autimatic commissioning of the device in the network.
-SCHC
+taken to enable an automatic commissioning of the device in the network.
 
 ## Device Development
 
@@ -391,7 +390,7 @@ A corrupted Rule Set may be used for multiple forms of attacks, more in {{Securi
 [//]: # (how to provision the GW with the security and the rule set for the new device?)
 -->
 
-The device and the network should mutually authenticate themselves. The autonomic approach {{!RFC8993}} provides a model to achieve this at scale with zero touchn, in networks where enough bandwidth and compute are available. In highly constrained networks, one touch is usually necessary to program keys in the devices.
+The device and the network should mutually authenticate themselves. The autonomic approach {{!RFC8993}} provides a model to achieve this at scale with zero touch, in networks where enough bandwidth and compute are available. In highly constrained networks, one touch is usually necessary to program keys in the devices.
 
 The initial handshake between the SCHC endpoints should comprise a capability exchange whereby URN and the version of the rule set are obtained or compared. SCHC may not be used if both ends can not agree on an URN and a major version.  Manufacturer Usage Descriptions (MUD) {{!RFC8520}} may be used for that purpose in the device model.
 
