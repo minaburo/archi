@@ -5,14 +5,14 @@
 LPWAN Working Group                                             A. Pelov
 Internet-Draft                                                    Acklio
 Intended status: Informational                                P. Thubert
-Expires: 1 January 2023                                    Cisco Systems
+Expires: 30 September 2023                                 Cisco Systems
                                                              A. Minaburo
                                                                   Acklio
-                                                            30 June 2022
+                                                           29 March 2023
 
 
       LPWAN Static Context Header Compression (SCHC) Architecture
-                    draft-ietf-lpwan-architecture-02
+                    draft-ietf-schc-architecture-00
 
 Abstract
 
@@ -33,11 +33,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 January 2023.
+   This Internet-Draft will expire on 30 September 2023.
 
 Copyright Notice
 
-   Copyright (c) 2022 IETF Trust and the persons identified as the
+   Copyright (c) 2023 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Pelov, et al.            Expires 1 January 2023                 [Page 1]
+Pelov, et al.           Expires 30 September 2023               [Page 1]
 
-Internet-Draft             LPWAN Architecture                  June 2022
+Internet-Draft             LPWAN Architecture                 March 2023
 
 
 Table of Contents
@@ -70,15 +70,15 @@ Table of Contents
    5.  SCHC Architecture . . . . . . . . . . . . . . . . . . . . . .   4
      5.1.  SCHC Endpoints  . . . . . . . . . . . . . . . . . . . . .   4
      5.2.  SCHC Instances  . . . . . . . . . . . . . . . . . . . . .   5
-     5.3.  Layering with SCHC Instances  . . . . . . . . . . . . . .   6
-   6.  SCHC Data Model . . . . . . . . . . . . . . . . . . . . . . .   7
+     5.3.  Layering with SCHC Instances  . . . . . . . . . . . . . .   7
+   6.  SCHC Data Model . . . . . . . . . . . . . . . . . . . . . . .   8
    7.  SCHC Device Lifecycle . . . . . . . . . . . . . . . . . . . .   9
      7.1.  Device Development  . . . . . . . . . . . . . . . . . . .   9
      7.2.  Rules Publication . . . . . . . . . . . . . . . . . . . .  10
      7.3.  SCHC Device Deployment  . . . . . . . . . . . . . . . . .  10
      7.4.  SCHC Device Maintenance . . . . . . . . . . . . . . . . .  10
-     7.5.  SCHC Device Decommissionning  . . . . . . . . . . . . . .  10
-   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
+     7.5.  SCHC Device Decommissionning  . . . . . . . . . . . . . .  11
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
    9.  IANA Consideration  . . . . . . . . . . . . . . . . . . . . .  11
    10. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
    11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
@@ -93,9 +93,10 @@ Table of Contents
    technologies. [rfc8376] presents an overview of those technologies.
 
    The Static Context Header Compression (SCHC) [rfc8724] technology is
-   the core product of the IETF LPWAN working group. [rfc8724] defines a
-   generic framework for header compression and fragmentation, based on
-   a static context that is pre-installed on the SCHC endpoints.
+   the core product of the IETF LPWAN working group and was the basis to
+   form the SCHC Working Group. [rfc8724] defines a generic framework
+   for header compression and fragmentation, based on a static context
+   that is pre-installed on the SCHC endpoints.
 
    This document details the constitutive elements of a SCHC-based
    solution, and how the solution can be deployed.  It provides a
@@ -108,10 +109,9 @@ Table of Contents
 
 
 
-
-Pelov, et al.            Expires 1 January 2023                 [Page 2]
+Pelov, et al.           Expires 30 September 2023               [Page 2]
 
-Internet-Draft             LPWAN Architecture                  June 2022
+Internet-Draft             LPWAN Architecture                 March 2023
 
 
 2.  LPWAN Technologies and Profiles
@@ -121,9 +121,9 @@ Internet-Draft             LPWAN Architecture                  June 2022
    directionality, a SCHC instance must be profiled to adapt to the
    specific necessities of the technology to which it is applied.
 
-   Appendix D.  "SCHC Parameters" of [rfc8724] lists the information
-   that an LPWAN technology-specific document must provide to profile
-   SCHC for that technology.
+   Appendix D.  OCGBPSCHC ParametersOCOe of [rfc8724] lists the
+   information that an LPWAN technology-specific document must provide
+   to profile SCHC for that technology.
 
    As an example, [rfc9011] provides the SCHC profile for LoRaWAN
    networks.
@@ -165,9 +165,9 @@ Internet-Draft             LPWAN Architecture                  June 2022
 
 
 
-Pelov, et al.            Expires 1 January 2023                 [Page 3]
+Pelov, et al.           Expires 30 September 2023               [Page 3]
 
-Internet-Draft             LPWAN Architecture                  June 2022
+Internet-Draft             LPWAN Architecture                 March 2023
 
 
 4.  SCHC Applicability
@@ -221,9 +221,9 @@ Internet-Draft             LPWAN Architecture                  June 2022
 
 
 
-Pelov, et al.            Expires 1 January 2023                 [Page 4]
+Pelov, et al.           Expires 30 September 2023               [Page 4]
 
-Internet-Draft             LPWAN Architecture                  June 2022
+Internet-Draft             LPWAN Architecture                 March 2023
 
 
    Typically, an LPWAN network topology is star-oriented, which means
@@ -255,7 +255,7 @@ Internet-Draft             LPWAN Architecture                  June 2022
    direction cannot be inferred, either from the network topology nor
    from the device capability.
 
-   In that case, by convention, the device that initiates the donnection
+   In that case, by convention, the device that initiates the connection
    that sustains the SCHC Instance is considered as being Downlink, IOW
    it plays the role of the Dev in [rfc8724].
 
@@ -277,9 +277,9 @@ Internet-Draft             LPWAN Architecture                  June 2022
 
 
 
-Pelov, et al.            Expires 1 January 2023                 [Page 5]
+Pelov, et al.           Expires 30 September 2023               [Page 5]
 
-Internet-Draft             LPWAN Architecture                  June 2022
+Internet-Draft             LPWAN Architecture                 March 2023
 
 
    that the device supports, and the Device does not need to manipulate
@@ -301,7 +301,7 @@ Internet-Draft             LPWAN Architecture                  June 2022
    instance, the SCHC session can be associated one-to-one with a
    tunnel, a TLS session, or a TCP or a PPP connection.
 
-   For instance, [I-D.thubert-intarea-schc-over-ppp] describes a type of
+   For instance, [I-D.thubert-schc-over-ppp] describes a type of
    deployment where the C/D and/or F/R operations are performed between
    peers of equal capabilities over a PPP [rfc2516] connection.  SCHC
    over PPP illustrates that with SCHC, the protocols that are
@@ -322,21 +322,27 @@ Internet-Draft             LPWAN Architecture                  June 2022
    In that case, the SCHC Instance is derived from the PPP connection.
    This means that there can be only one Instance per PPP connection,
    and that all the flow and only the flow of that Instance is exchanged
-   within the PPP connection.
+   within the PPP connection.  As discussed in Section 5.1, the Uplink
+   direction is from the node that initiated the PPP connection to the
+   node that accepted it.
+
+
+
+
+
+
+
+
+Pelov, et al.           Expires 30 September 2023               [Page 6]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
 
 5.3.  Layering with SCHC Instances
 
    [rfc8724] states that a SCHC instance needs the rules to process C/D
    and F/R before the session starts, and that rules cannot be modified
    during the session.
-
-
-
-
-Pelov, et al.            Expires 1 January 2023                 [Page 6]
-
-Internet-Draft             LPWAN Architecture                  June 2022
-
 
    As represented figure Figure 3, the compression of the IP and UDP
    headers may be operated by a network SCHC instance whereas the end-
@@ -379,20 +385,20 @@ Internet-Draft             LPWAN Architecture                  June 2022
    the LPWAN working group to design an operational and interoperable
    framework for allowing IP application over contrained networks.
 
+
+
+
+
+Pelov, et al.           Expires 30 September 2023               [Page 7]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
+
 6.  SCHC Data Model
 
    A SCHC instance, summarized in the Figure 4, implies C/D and/or F/R
    present in both end and that both ends are provisioned with the same
    set of rules.
-
-
-
-
-
-Pelov, et al.            Expires 1 January 2023                 [Page 7]
-
-Internet-Draft             LPWAN Architecture                  June 2022
-
 
           (-------)                                (-------)
           ( Rules )                                ( Rules )
@@ -408,13 +414,12 @@ Internet-Draft             LPWAN Architecture                  June 2022
 
    A common rule representation that expresses the SCHC rules in an
    interoperable fashion is needed yo be able to provision end-points
-   from different vendors To that effect,
-   [I-D.ietf-lpwan-schc-yang-data-model] defines a rule representation
-   using the YANG [rfc7950] formalism.
+   from different vendors To that effect, [rfc9363] defines a rule
+   representation using the YANG [rfc7950] formalism.
 
-   [I-D.ietf-lpwan-schc-yang-data-model] defines an YANG data model to
-   represent the rules.  This enables the use of several protocols for
-   rule management, such as NETCONF[RFC6241], RESTCONF[RFC8040], and
+   [rfc9363] defines an YANG data model to represent the rules.  This
+   enables the use of several protocols for rule management, such as
+   NETCONF[RFC6241], RESTCONF[RFC8040], and
    CORECONF[I-D.ietf-core-comi].  NETCONF uses SSH, RESTCONF uses HTTPS,
    and CORECONF uses CoAP(s) as their respective transport layer
    protocols.  The data is represented in XML under NETCONF, in
@@ -436,20 +441,21 @@ Internet-Draft             LPWAN Architecture                  June 2022
    The Rule Manager (RM) is in charge of handling data derived from the
    YANG Data Model and apply changes to the rules database Figure 5.
 
+
+
+
+
+Pelov, et al.           Expires 30 September 2023               [Page 8]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
+
    The RM is an Application using the Internet to exchange information,
    therefore:
 
    *  for the network-level SCHC, the communication does not require
       routing.  Each of the end-points having an RM and both RMs can be
       viewed on the same link, therefore wellknown Link Local addresses
-
-
-
-Pelov, et al.            Expires 1 January 2023                 [Page 8]
-
-Internet-Draft             LPWAN Architecture                  June 2022
-
-
       can be used to identify the Device and the core RM.  L2 security
       MAY be deemed as sufficient, if it provides the necessary level of
       protection.
@@ -458,16 +464,16 @@ Internet-Draft             LPWAN Architecture                  June 2022
       addresses SHOULD be used.  End-to-end encryption is RECOMMENDED.
 
    Management messages can also be carried in the negotiation protocol
-   as proposed in [I-D.thubert-intarea-schc-over-ppp].  The RM traffic
-   may be itself compressed by SCHC: if CORECONF protocol is used,
-   [rfc8824] can be applied.
+   as proposed in [I-D.thubert-schc-over-ppp].  The RM traffic may be
+   itself compressed by SCHC: if CORECONF protocol is used, [rfc8824]
+   can be applied.
 
 7.  SCHC Device Lifecycle
 
    In the context of LPWANs, the expectation is that SCHC rules are
    associated with a physical device that is deployed in a network.
-   This section describes the actions taken to enable an autimatic
-   commissioning of the device in the network.  SCHC
+   This section describes the actions taken to enable an automatic
+   commissioning of the device in the network.
 
 7.1.  Device Development
 
@@ -487,6 +493,19 @@ Internet-Draft             LPWAN Architecture                  June 2022
        are published separately to be used by a generic SCHC engine that
        operates in a middle box such as a SCHC gateway.
 
+
+
+
+
+
+
+
+
+Pelov, et al.           Expires 30 September 2023               [Page 9]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
+
    3.  In the protocol model, both endpoint generate a packet format
        that is imposed by a protocol.  In that case, the protocol itself
        is the source to generate the Rules.  Both ends of the SCHC
@@ -497,14 +516,6 @@ Internet-Draft             LPWAN Architecture                  June 2022
    Depending on the deployment, the tools thar generate the Rules should
    provide knobs to optimize the Rule set, e.g., more rules vs. larger
    residue.
-
-
-
-
-Pelov, et al.            Expires 1 January 2023                 [Page 9]
-
-Internet-Draft             LPWAN Architecture                  June 2022
-
 
 7.2.  Rules Publication
 
@@ -522,9 +533,9 @@ Internet-Draft             LPWAN Architecture                  June 2022
 
    The device and the network should mutually authenticate themselves.
    The autonomic approach [RFC8993] provides a model to achieve this at
-   scale with zero touchn, in networks where enough bandwidth and
-   compute are available.  In highly constrained networks, one touch is
-   usually necessary to program keys in the devices.
+   scale with zero touch, in networks where enough bandwidth and compute
+   are available.  In highly constrained networks, one touch is usually
+   necessary to program keys in the devices.
 
    The initial handshake between the SCHC endpoints should comprise a
    capability exchange whereby URN and the version of the rule set are
@@ -542,6 +553,15 @@ Internet-Draft             LPWAN Architecture                  June 2022
    URN update without device update (bug fix) FUOTA => new URN =>
    reprovisioning
 
+
+
+
+
+Pelov, et al.           Expires 30 September 2023              [Page 10]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
+
 7.5.  SCHC Device Decommissionning
 
    Signal from device/vendor/network admin
@@ -554,13 +574,6 @@ Internet-Draft             LPWAN Architecture                  June 2022
    Device or crash it.  It is thus critical to ensure that the rules are
    distributed in a fashion that is protected against tempering, e.g.,
    encrypted and signed.
-
-
-
-Pelov, et al.            Expires 1 January 2023                [Page 10]
-
-Internet-Draft             LPWAN Architecture                  June 2022
-
 
 9.  IANA Consideration
 
@@ -598,6 +611,13 @@ Internet-Draft             LPWAN Architecture                  June 2022
               DOI 10.17487/RFC8724, April 2020,
               <https://www.rfc-editor.org/info/rfc8724>.
 
+
+
+Pelov, et al.           Expires 30 September 2023              [Page 11]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
+
    [rfc8824]  Minaburo, A., Toutain, L., and R. Andreasen, "Static
               Context Header Compression (SCHC) for the Constrained
               Application Protocol (CoAP)", RFC 8824,
@@ -609,15 +629,6 @@ Internet-Draft             LPWAN Architecture                  June 2022
               Networking", RFC 8993, DOI 10.17487/RFC8993, May 2021,
               <https://www.rfc-editor.org/info/rfc8993>.
 
-
-
-
-
-Pelov, et al.            Expires 1 January 2023                [Page 11]
-
-Internet-Draft             LPWAN Architecture                  June 2022
-
-
    [rfc9011]  Gimenez, O., Ed. and I. Petrov, Ed., "Static Context
               Header Compression and Fragmentation (SCHC) over LoRaWAN",
               RFC 9011, DOI 10.17487/RFC9011, April 2021,
@@ -626,24 +637,17 @@ Internet-Draft             LPWAN Architecture                  June 2022
 11.2.  Informative References
 
    [I-D.ietf-core-comi]
-              Veillette, M., Stok, P. V. D., Pelov, A., Bierman, A., and
-              I. Petrov, "CoAP Management Interface (CORECONF)", Work in
-              Progress, Internet-Draft, draft-ietf-core-comi-11, 17
-              January 2021, <https://www.ietf.org/archive/id/draft-ietf-
-              core-comi-11.txt>.
+              Veillette, M., Van der Stok, P., Pelov, A., Bierman, A.,
+              and C. Bormann, "CoAP Management Interface (CORECONF)",
+              Work in Progress, Internet-Draft, draft-ietf-core-comi-12,
+              13 March 2023, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-core-comi-12>.
 
-   [I-D.ietf-lpwan-schc-yang-data-model]
-              Minaburo, A. and L. Toutain, "Data Model for Static
-              Context Header Compression (SCHC)", Work in Progress,
-              Internet-Draft, draft-ietf-lpwan-schc-yang-data-model-12,
-              25 May 2022, <https://www.ietf.org/archive/id/draft-ietf-
-              lpwan-schc-yang-data-model-12.txt>.
-
-   [I-D.thubert-intarea-schc-over-ppp]
+   [I-D.thubert-schc-over-ppp]
               Thubert, P., "SCHC over PPP", Work in Progress, Internet-
-              Draft, draft-thubert-intarea-schc-over-ppp-03, 21 April
-              2021, <https://www.ietf.org/archive/id/draft-thubert-
-              intarea-schc-over-ppp-03.txt>.
+              Draft, draft-thubert-schc-over-ppp-00, 29 March 2023,
+              <https://datatracker.ietf.org/doc/html/draft-thubert-schc-
+              over-ppp-00>.
 
    [rfc2516]  Mamakos, L., Lidl, K., Evarts, J., Carrel, D., Simone, D.,
               and R. Wheeler, "A Method for Transmitting PPP Over
@@ -660,19 +664,19 @@ Internet-Draft             LPWAN Architecture                  June 2022
               DOI 10.17487/RFC7252, June 2014,
               <https://www.rfc-editor.org/info/rfc7252>.
 
+
+
+
+
+
+Pelov, et al.           Expires 30 September 2023              [Page 12]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
+
    [rfc7950]  Bjorklund, M., Ed., "The YANG 1.1 Data Modeling Language",
               RFC 7950, DOI 10.17487/RFC7950, August 2016,
               <https://www.rfc-editor.org/info/rfc7950>.
-
-
-
-
-
-
-Pelov, et al.            Expires 1 January 2023                [Page 12]
-
-Internet-Draft             LPWAN Architecture                  June 2022
-
 
    [RFC8040]  Bierman, A., Bjorklund, M., and K. Watsen, "RESTCONF
               Protocol", RFC 8040, DOI 10.17487/RFC8040, January 2017,
@@ -706,7 +710,25 @@ Internet-Draft             LPWAN Architecture                  June 2022
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/info/rfc8949>.
 
+   [rfc9363]  Minaburo, A. and L. Toutain, "A YANG Data Model for Static
+              Context Header Compression (SCHC)", RFC 9363,
+              DOI 10.17487/RFC9363, March 2023,
+              <https://www.rfc-editor.org/info/rfc9363>.
+
 Authors' Addresses
+
+
+
+
+
+
+
+
+
+Pelov, et al.           Expires 30 September 2023              [Page 13]
+
+Internet-Draft             LPWAN Architecture                 March 2023
+
 
    Alexander Pelov
    Acklio
@@ -715,19 +737,6 @@ Authors' Addresses
    France
 
    Email: a@ackl.io
-
-
-
-
-
-
-
-
-
-
-Pelov, et al.            Expires 1 January 2023                [Page 13]
-
-Internet-Draft             LPWAN Architecture                  June 2022
 
 
    Pascal Thubert
@@ -772,13 +781,4 @@ Internet-Draft             LPWAN Architecture                  June 2022
 
 
 
-
-
-
-
-
-
-
-
-
-Pelov, et al.            Expires 1 January 2023                [Page 14]
+Pelov, et al.           Expires 30 September 2023              [Page 14]

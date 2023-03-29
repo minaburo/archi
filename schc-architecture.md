@@ -1,7 +1,7 @@
 ---
 stand_alone: true
 ipr: trust200902
-docname: draft-ietf-lpwan-architecture-03
+docname: draft-ietf-schc-architecture-00
 cat: info
 pi:
   symrefs: 'yes'
@@ -10,7 +10,7 @@ pi:
   compact: 'yes'
   toc: 'yes'
 
-title: "LPWAN Static Context Header Compression (SCHC) Architecture"
+title: "Static Context Header Compression (SCHC) Architecture"
 abbrev: LPWAN Architecture
 wg: LPWAN Working Group
 area: Internet
@@ -45,15 +45,15 @@ informative:
   rfc8200: IPv6
   rfc7950: YANG
   rfc8376: Overview
-  I-D.ietf-lpwan-schc-yang-data-model: Model
-  I-D.thubert-intarea-schc-over-ppp: SCHCoPPP
+  rfc9363: Model
+  I-D.thubert-schc-over-ppp: SCHCoPPP
   I-D.ietf-core-comi: COMI
 
 
 
 --- abstract
 
-This document defines the LPWAN SCHC architecture.
+This document defines the SCHC architecture.
 
 --- middle
 
@@ -64,8 +64,10 @@ selected Low-Power Wide Area Networking (LPWAN) radio technologies.
 {{-Overview}} presents an overview of those technologies.
 
 The Static Context Header Compression (SCHC) {{rfc8724}} technology is the core
-product of the IETF LPWAN working group. {{rfc8724}} defines a generic framework
-for header compression and fragmentation, based on a static context that is pre-installed on the SCHC endpoints.
+product of the IETF LPWAN working group and was the basis to form the SCHC
+Working Group.
+{{rfc8724}} defines a generic framework for header compression and fragmentation,
+based on a static context that is pre-installed on the SCHC endpoints.
 
 This document details the constitutive elements of a SCHC-based solution, and
 how the solution can be deployed. It provides a general architecture for a SCHC
@@ -330,7 +332,7 @@ fashion is needed yo be able to provision end-points from different vendors
 To that effect, {{-Model}} defines a rule representation using the
 [YANG](#rfc7950) formalism.
 
-{{I-D.ietf-lpwan-schc-yang-data-model}} defines an YANG data model to represent the rules. This enables the use of several protocols for rule management, such as NETCONF{{?RFC6241}}, RESTCONF{{?RFC8040}}, and CORECONF{{-COMI}}. NETCONF uses SSH, RESTCONF uses HTTPS, and CORECONF uses CoAP(s) as their respective transport layer protocols. The data is represented in XML under NETCONF, in JSON{{?RFC8259}} under RESTCONF and in CBOR{{?RFC8949}} under CORECONF.
+{{rfc9363}} defines an YANG data model to represent the rules. This enables the use of several protocols for rule management, such as NETCONF{{?RFC6241}}, RESTCONF{{?RFC8040}}, and CORECONF{{-COMI}}. NETCONF uses SSH, RESTCONF uses HTTPS, and CORECONF uses CoAP(s) as their respective transport layer protocols. The data is represented in XML under NETCONF, in JSON{{?RFC8259}} under RESTCONF and in CBOR{{?RFC8949}} under CORECONF.
 
 ~~~~
                   create
