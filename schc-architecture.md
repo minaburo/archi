@@ -11,8 +11,8 @@ pi:
   toc: 'yes'
 
 title: "Static Context Header Compression (SCHC) Architecture"
-abbrev: LPWAN Architecture
-wg: LPWAN Working Group
+abbrev: SCHC Architecture
+wg: SCHC Working Group
 area: Internet
 author:
 - ins: A. Pelov

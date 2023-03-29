@@ -2,7 +2,7 @@
 
 
 
-LPWAN Working Group                                             A. Pelov
+SCHC Working Group                                              A. Pelov
 Internet-Draft                                                    Acklio
 Intended status: Informational                                P. Thubert
 Expires: 30 September 2023                                 Cisco Systems
@@ -11,12 +11,12 @@ Expires: 30 September 2023                                 Cisco Systems
                                                            29 March 2023
 
 
-      LPWAN Static Context Header Compression (SCHC) Architecture
+         Static Context Header Compression (SCHC) Architecture
                     draft-ietf-schc-architecture-00
 
 Abstract
 
-   This document defines the LPWAN SCHC architecture.
+   This document defines the SCHC architecture.
 
 Status of This Memo
 
@@ -55,7 +55,7 @@ Copyright Notice
 
 Pelov, et al.           Expires 30 September 2023               [Page 1]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
 Table of Contents
@@ -111,7 +111,7 @@ Table of Contents
 
 Pelov, et al.           Expires 30 September 2023               [Page 2]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
 2.  LPWAN Technologies and Profiles
@@ -167,7 +167,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023               [Page 3]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
 4.  SCHC Applicability
@@ -223,7 +223,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023               [Page 4]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
    Typically, an LPWAN network topology is star-oriented, which means
@@ -279,7 +279,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023               [Page 5]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
    that the device supports, and the Device does not need to manipulate
@@ -335,7 +335,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023               [Page 6]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
 5.3.  Layering with SCHC Instances
@@ -391,7 +391,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023               [Page 7]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
 6.  SCHC Data Model
@@ -447,7 +447,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023               [Page 8]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
    The RM is an Application using the Internet to exchange information,
@@ -503,7 +503,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023               [Page 9]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
    3.  In the protocol model, both endpoint generate a packet format
@@ -559,7 +559,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023              [Page 10]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
 7.5.  SCHC Device Decommissionning
@@ -615,7 +615,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023              [Page 11]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
    [rfc8824]  Minaburo, A., Toutain, L., and R. Andreasen, "Static
@@ -671,7 +671,7 @@ Internet-Draft             LPWAN Architecture                 March 2023
 
 Pelov, et al.           Expires 30 September 2023              [Page 12]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
    [rfc7950]  Bjorklund, M., Ed., "The YANG 1.1 Data Modeling Language",
@@ -727,7 +727,7 @@ Authors' Addresses
 
 Pelov, et al.           Expires 30 September 2023              [Page 13]
 
-Internet-Draft             LPWAN Architecture                 March 2023
+Internet-Draft              SCHC Architecture                 March 2023
 
 
    Alexander Pelov
