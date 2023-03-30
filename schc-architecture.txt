@@ -5,14 +5,14 @@
 SCHC Working Group                                              A. Pelov
 Internet-Draft                                                    Acklio
 Intended status: Informational                                P. Thubert
-Expires: 30 September 2023                                 Cisco Systems
+Expires: 1 October 2023                                    Cisco Systems
                                                              A. Minaburo
                                                                   Acklio
-                                                           29 March 2023
+                                                           30 March 2023
 
 
          Static Context Header Compression (SCHC) Architecture
-                    draft-ietf-schc-architecture-00
+                    draft-ietf-schc-architecture-01
 
 Abstract
 
@@ -33,7 +33,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 September 2023.
+   This Internet-Draft will expire on 1 October 2023.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 1]
+Pelov, et al.            Expires 1 October 2023                 [Page 1]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 2]
+Pelov, et al.            Expires 1 October 2023                 [Page 2]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -121,9 +121,9 @@ Internet-Draft              SCHC Architecture                 March 2023
    directionality, a SCHC instance must be profiled to adapt to the
    specific necessities of the technology to which it is applied.
 
-   Appendix D.  OCGBPSCHC ParametersOCOe of [rfc8724] lists the
-   information that an LPWAN technology-specific document must provide
-   to profile SCHC for that technology.
+   Appendix D.  "SCHC Parameters" of [rfc8724] lists the information
+   that an LPWAN technology-specific document must provide to profile
+   SCHC for that technology.
 
    As an example, [rfc9011] provides the SCHC profile for LoRaWAN
    networks.
@@ -165,7 +165,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 3]
+Pelov, et al.            Expires 1 October 2023                 [Page 3]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -221,7 +221,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 4]
+Pelov, et al.            Expires 1 October 2023                 [Page 4]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -277,7 +277,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 5]
+Pelov, et al.            Expires 1 October 2023                 [Page 5]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -333,7 +333,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 6]
+Pelov, et al.            Expires 1 October 2023                 [Page 6]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -389,7 +389,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 7]
+Pelov, et al.            Expires 1 October 2023                 [Page 7]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -445,7 +445,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 8]
+Pelov, et al.            Expires 1 October 2023                 [Page 8]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -501,7 +501,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023               [Page 9]
+Pelov, et al.            Expires 1 October 2023                 [Page 9]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -557,7 +557,7 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023              [Page 10]
+Pelov, et al.            Expires 1 October 2023                [Page 10]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -590,30 +590,30 @@ Internet-Draft              SCHC Architecture                 March 2023
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              <https://www.rfc-editor.org/rfc/rfc2119>.
 
    [RFC8141]  Saint-Andre, P. and J. Klensin, "Uniform Resource Names
               (URNs)", RFC 8141, DOI 10.17487/RFC8141, April 2017,
-              <https://www.rfc-editor.org/info/rfc8141>.
+              <https://www.rfc-editor.org/rfc/rfc8141>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
    [RFC8520]  Lear, E., Droms, R., and D. Romascanu, "Manufacturer Usage
               Description Specification", RFC 8520,
               DOI 10.17487/RFC8520, March 2019,
-              <https://www.rfc-editor.org/info/rfc8520>.
+              <https://www.rfc-editor.org/rfc/rfc8520>.
 
    [rfc8724]  Minaburo, A., Toutain, L., Gomez, C., Barthel, D., and JC.
               Zuniga, "SCHC: Generic Framework for Static Context Header
               Compression and Fragmentation", RFC 8724,
               DOI 10.17487/RFC8724, April 2020,
-              <https://www.rfc-editor.org/info/rfc8724>.
+              <https://www.rfc-editor.org/rfc/rfc8724>.
 
 
 
-Pelov, et al.           Expires 30 September 2023              [Page 11]
+Pelov, et al.            Expires 1 October 2023                [Page 11]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -622,17 +622,17 @@ Internet-Draft              SCHC Architecture                 March 2023
               Context Header Compression (SCHC) for the Constrained
               Application Protocol (CoAP)", RFC 8824,
               DOI 10.17487/RFC8824, June 2021,
-              <https://www.rfc-editor.org/info/rfc8824>.
+              <https://www.rfc-editor.org/rfc/rfc8824>.
 
    [RFC8993]  Behringer, M., Ed., Carpenter, B., Eckert, T., Ciavaglia,
               L., and J. Nobre, "A Reference Model for Autonomic
               Networking", RFC 8993, DOI 10.17487/RFC8993, May 2021,
-              <https://www.rfc-editor.org/info/rfc8993>.
+              <https://www.rfc-editor.org/rfc/rfc8993>.
 
    [rfc9011]  Gimenez, O., Ed. and I. Petrov, Ed., "Static Context
               Header Compression and Fragmentation (SCHC) over LoRaWAN",
               RFC 9011, DOI 10.17487/RFC9011, April 2021,
-              <https://www.rfc-editor.org/info/rfc9011>.
+              <https://www.rfc-editor.org/rfc/rfc9011>.
 
 11.2.  Informative References
 
@@ -640,80 +640,80 @@ Internet-Draft              SCHC Architecture                 March 2023
               Veillette, M., Van der Stok, P., Pelov, A., Bierman, A.,
               and C. Bormann, "CoAP Management Interface (CORECONF)",
               Work in Progress, Internet-Draft, draft-ietf-core-comi-12,
-              13 March 2023, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-core-comi-12>.
+              13 March 2023,
+              <https://tools.ietf.org/html/draft-ietf-core-comi-12>.
 
    [I-D.thubert-schc-over-ppp]
               Thubert, P., "SCHC over PPP", Work in Progress, Internet-
               Draft, draft-thubert-schc-over-ppp-00, 29 March 2023,
-              <https://datatracker.ietf.org/doc/html/draft-thubert-schc-
-              over-ppp-00>.
+              <https://tools.ietf.org/html/draft-thubert-schc-over-ppp-
+              00>.
 
    [rfc2516]  Mamakos, L., Lidl, K., Evarts, J., Carrel, D., Simone, D.,
               and R. Wheeler, "A Method for Transmitting PPP Over
               Ethernet (PPPoE)", RFC 2516, DOI 10.17487/RFC2516,
-              February 1999, <https://www.rfc-editor.org/info/rfc2516>.
+              February 1999, <https://www.rfc-editor.org/rfc/rfc2516>.
 
    [RFC6241]  Enns, R., Ed., Bjorklund, M., Ed., Schoenwaelder, J., Ed.,
               and A. Bierman, Ed., "Network Configuration Protocol
               (NETCONF)", RFC 6241, DOI 10.17487/RFC6241, June 2011,
-              <https://www.rfc-editor.org/info/rfc6241>.
+              <https://www.rfc-editor.org/rfc/rfc6241>.
 
    [RFC7252]  Shelby, Z., Hartke, K., and C. Bormann, "The Constrained
               Application Protocol (CoAP)", RFC 7252,
               DOI 10.17487/RFC7252, June 2014,
-              <https://www.rfc-editor.org/info/rfc7252>.
+              <https://www.rfc-editor.org/rfc/rfc7252>.
 
 
 
 
 
 
-Pelov, et al.           Expires 30 September 2023              [Page 12]
+Pelov, et al.            Expires 1 October 2023                [Page 12]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
 
    [rfc7950]  Bjorklund, M., Ed., "The YANG 1.1 Data Modeling Language",
               RFC 7950, DOI 10.17487/RFC7950, August 2016,
-              <https://www.rfc-editor.org/info/rfc7950>.
+              <https://www.rfc-editor.org/rfc/rfc7950>.
 
    [RFC8040]  Bierman, A., Bjorklund, M., and K. Watsen, "RESTCONF
               Protocol", RFC 8040, DOI 10.17487/RFC8040, January 2017,
-              <https://www.rfc-editor.org/info/rfc8040>.
+              <https://www.rfc-editor.org/rfc/rfc8040>.
 
    [rfc8141]  Saint-Andre, P. and J. Klensin, "Uniform Resource Names
               (URNs)", RFC 8141, DOI 10.17487/RFC8141, April 2017,
-              <https://www.rfc-editor.org/info/rfc8141>.
+              <https://www.rfc-editor.org/rfc/rfc8141>.
 
    [rfc8200]  Deering, S. and R. Hinden, "Internet Protocol, Version 6
               (IPv6) Specification", STD 86, RFC 8200,
               DOI 10.17487/RFC8200, July 2017,
-              <https://www.rfc-editor.org/info/rfc8200>.
+              <https://www.rfc-editor.org/rfc/rfc8200>.
 
    [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
               Interchange Format", STD 90, RFC 8259,
               DOI 10.17487/RFC8259, December 2017,
-              <https://www.rfc-editor.org/info/rfc8259>.
+              <https://www.rfc-editor.org/rfc/rfc8259>.
 
    [rfc8376]  Farrell, S., Ed., "Low-Power Wide Area Network (LPWAN)
               Overview", RFC 8376, DOI 10.17487/RFC8376, May 2018,
-              <https://www.rfc-editor.org/info/rfc8376>.
+              <https://www.rfc-editor.org/rfc/rfc8376>.
 
    [RFC8613]  Selander, G., Mattsson, J., Palombini, F., and L. Seitz,
               "Object Security for Constrained RESTful Environments
               (OSCORE)", RFC 8613, DOI 10.17487/RFC8613, July 2019,
-              <https://www.rfc-editor.org/info/rfc8613>.
+              <https://www.rfc-editor.org/rfc/rfc8613>.
 
    [RFC8949]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
-              <https://www.rfc-editor.org/info/rfc8949>.
+              <https://www.rfc-editor.org/rfc/rfc8949>.
 
    [rfc9363]  Minaburo, A. and L. Toutain, "A YANG Data Model for Static
               Context Header Compression (SCHC)", RFC 9363,
               DOI 10.17487/RFC9363, March 2023,
-              <https://www.rfc-editor.org/info/rfc9363>.
+              <https://www.rfc-editor.org/rfc/rfc9363>.
 
 Authors' Addresses
 
@@ -725,7 +725,7 @@ Authors' Addresses
 
 
 
-Pelov, et al.           Expires 30 September 2023              [Page 13]
+Pelov, et al.            Expires 1 October 2023                [Page 13]
 
 Internet-Draft              SCHC Architecture                 March 2023
 
@@ -781,4 +781,4 @@ Internet-Draft              SCHC Architecture                 March 2023
 
 
 
-Pelov, et al.           Expires 30 September 2023              [Page 14]
+Pelov, et al.            Expires 1 October 2023                [Page 14]

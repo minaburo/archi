@@ -1,8 +1,11 @@
 ---
+
 stand_alone: true
 ipr: trust200902
-docname: draft-ietf-schc-architecture-00
+docname: draft-ietf-schc-architecture-01
 cat: info
+submissionType: IETF
+
 pi:
   symrefs: 'yes'
   sortrefs: 'yes'
@@ -25,9 +28,9 @@ author:
 - ins: P. Thubert
   name: Pascal Thubert
   org:  Cisco Systems
-  street:  Building D
-  street: 45 Allee des Ormes - BP1200
-  city:  06254 Mougins - Sophia Antipolis
+  street: Emerald Square, rue Evariste Galois
+  street: Batiment C
+  city:  06410 Biot - Sophia Antipolis
   country: France
   email: pthubert@cisco.com
 - ins: A. Minaburo
@@ -58,6 +61,8 @@ This document defines the SCHC architecture.
 --- middle
 
 # Introduction {#Introduction}
+
+<!--- (compiled with:  "kdrfc schc-architecture.md" ) -->
 
 The IETF LPWAN WG defined the necessary operations to enable IPv6 over
 selected Low-Power Wide Area Networking (LPWAN) radio technologies.
