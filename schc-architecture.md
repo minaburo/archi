@@ -306,7 +306,7 @@ applies before LPWAN transportation layer.
 
 This document defines a generic architecture for SCHC that can be used at any of these levels.
 The goal of the architectural document is to orchestrate the different protocols and data model
-defined by the LPWAN working group to design an operational and interoperable
+defined by the LPWAN and SCHC working groups to design an operational and interoperable
 framework for allowing IP application over contrained networks.
 
 
@@ -333,8 +333,8 @@ A SCHC instance, summarized in the {{Fig-Glob-Arch1}}, implies C/D and/or F/R pr
 
 
 A common rule representation that expresses the SCHC rules in an interoperable
-fashion is needed yo be able to provision end-points from different vendors
-To that effect, {{-Model}} defines a rule representation using the
+fashion is needed to be able to provision end-points from different vendors
+to that effect, {{-Model}} defines a rule representation using the
 [YANG](#rfc7950) formalism.
 
 {{rfc9363}} defines an YANG data model to represent the rules. This enables the use of several protocols for rule management, such as NETCONF{{?RFC6241}}, RESTCONF{{?RFC8040}}, and CORECONF{{-COMI}}. NETCONF uses SSH, RESTCONF uses HTTPS, and CORECONF uses CoAP(s) as their respective transport layer protocols. The data is represented in XML under NETCONF, in JSON{{?RFC8259}} under RESTCONF and in CBOR{{?RFC8949}} under CORECONF.
@@ -380,7 +380,7 @@ The expectation for the development cycle is that message formats are documented
 
 3. In the protocol model, both endpoint generate a packet format that is imposed by a protocol. In that case, the protocol itself is the source to generate the Rules. Both ends of the SCHC compression are operated in middle boxes, and special attention must be taken to ensure that they operate on the compatible Rule sets, basically the same major version of the same Rule Set.
 
-Depending on the deployment, the tools thar generate the Rules should provide knobs to optimize the Rule set, e.g., more rules vs. larger residue.
+Depending on the deployment, the tools that generate the Rules should provide knobs to optimize the Rule set, e.g., more rules vs. larger residue.
 
 ## Rules Publication
 
@@ -401,7 +401,7 @@ The device and the network should mutually authenticate themselves. The autonomi
 
 The initial handshake between the SCHC endpoints should comprise a capability exchange whereby URN and the version of the rule set are obtained or compared. SCHC may not be used if both ends can not agree on an URN and a major version.  Manufacturer Usage Descriptions (MUD) {{!RFC8520}} may be used for that purpose in the device model.
 
-Upon the handshake, both ends can agree on a rule set, their role when the rules are asymmetrical, and fetch the rule set if necessary. Optionally, a node that fetwhed a rule set may inform the other end that it is reacy from transmission.
+Upon the handshake, both ends can agree on a rule set, their role when the rules are asymmetrical, and fetch the rule set if necessary. Optionally, a node that fetched a rule set may inform the other end that it is reacy from transmission.
 
 
 ## SCHC Device Maintenance
